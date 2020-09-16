@@ -1,0 +1,13 @@
+{
+    "width": 84,
+    "height": 84,
+    "history_length": 4,
+    "train_frequency": 4,
+    "evaluation_frequency": 15000,
+    "target_update_frequency": 10000,
+    "initial_replay_size": 5000,
+    "max_replay_size": 50000,
+    "test_samples": 12500,
+    "n_epochs": 100,
+    "game_name": "PongDeterministic-v4"
+}

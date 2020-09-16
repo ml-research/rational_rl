@@ -1,0 +1,1 @@
+{"_save_attributes": "json", "_fit_params": "pickle", "_batch_size": "numpy", "_n_approximators": "numpy", "_clip_reward": "numpy", "_target_update_frequency": "numpy", "_replay_memory": "pickle", "_fit": "pickle", "_n_updates": "numpy", "approximator": "pickle", "target_approximator": "pickle", "mdp_info": "pickle", "policy": "pickle", "phi": "pickle", "next_action": "numpy"}

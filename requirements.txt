@@ -1,0 +1,10 @@
+matplotlib==3.2.1
+seaborn==0.10.1
+setproctitle==1.1.10
+numpy==1.18.2
+physt==0.4.10.1
+torch==1.4.0
+mushroom_rl==1.4.0
+pandas==1.0.3
+gym==0.17.1
+airspeed==0.5.14

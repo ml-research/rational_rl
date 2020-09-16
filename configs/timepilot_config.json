@@ -1,0 +1,13 @@
+{
+    "width": 84,
+    "height": 84,
+    "history_length": 4,
+    "train_frequency": 4,
+    "evaluation_frequency": 250000,
+    "target_update_frequency": 10000,
+    "initial_replay_size": 50000,
+    "max_replay_size": 500000,
+    "test_samples": 125000,
+    "n_epochs": 500,
+    "game_name": "TimePilotDeterministic-v4"
+}
