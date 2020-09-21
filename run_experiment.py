@@ -1,6 +1,7 @@
 import pickle
 import torch.optim as optim
 import torch.nn.functional as F
+from mushroom_rl.algorithms.agent import Agent
 from mushroom_rl.algorithms.value import DQN, DoubleDQN
 from mushroom_rl.approximators.parametric import TorchApproximator
 from mushroom_rl.core import Core
@@ -107,7 +108,8 @@ if args.recover:
     prefix = f'{args.algo}_{file_name}_epoch_n_'
     rec_filename, last_epoch = recover(prefix)
     if rec_filename is not None:
-        agent.load(f"{agent_save_dir}/{rec_filename}")
+        #agent.load(f"{agent_save_dir}/{rec_filename}")
+        agent = Agent.load(f"{agent_save_dir}/{rec_filename}")
         init_epoch = last_epoch + 1
         print("\n\n" + "+" * 30 + "\n\n")
         print("Recovered agent: " + rec_filename)
@@ -128,7 +130,7 @@ rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}" , config.n_epochs
 if init_epoch == 0:
     rtpt.epoch_starts()
     print_epoch(0)
-    save_approximator(agent, f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_-1")
+    #save_approximator(agent, f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_-1")
     core.learn(n_steps=config.initial_replay_size,
                n_steps_per_fit=config.initial_replay_size)
     # Evaluate initial policy
@@ -137,7 +139,7 @@ if init_epoch == 0:
     dataset = core.evaluate(n_steps=config.test_samples, render=False)
     scores.append(get_stats(dataset))
     init_epoch += 1
-    save_approximator(agent, f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_0")
+    #save_approximator(agent, f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_0")
     rtpt.setproctitle()
 
 for n_epoch in range(init_epoch, config.n_epochs + 1):
@@ -156,13 +158,14 @@ for n_epoch in range(init_epoch, config.n_epochs + 1):
     dataset = core.evaluate(n_steps=config.test_samples)
     scores.append(get_stats(dataset))
     if n_epoch % 50 == 0:
+        pi.set_epsilon(epsilon) # Important to save the current Linear Parameter in the agent
         agent.save(f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_{n_epoch}")
         with open(f'./{agent_save_dir}/scores_{file_name}_epoch_{n_epoch}.pkl',
                   'wb') as f:
             pickle.dump(scores, f)
-        remove_heavy(f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_{n_epoch-50}")
-    elif n_epoch in list(range(11)):
-        save_approximator(agent, f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_{n_epoch}")
+        #remove_heavy(f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_{n_epoch-50}")
+    #elif n_epoch in list(range(11)):
+    #    save_approximator(agent, f"./{agent_save_dir}/{args.algo}_{file_name}_epoch_n_{n_epoch}")
     rtpt.setproctitle()
 
 
