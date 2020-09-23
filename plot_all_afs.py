@@ -34,7 +34,7 @@ for seed in [args.seed]:
     agents_folder = f'agent_save/populated/'
     regex = f"DQN_{args.game}Deterministic-v4_seed{seed}_{ args.act_f}_epoch_*"
     files_list = list_files(regex, agents_folder)
-    epochs = [int(ag_file.split("epoch_n_")[1]) for ag_file in files_list]
+    epochs = [int(ag_file.split("epoch_")[1]) for ag_file in files_list]
     epochs, files_list = zip(*sorted(zip(epochs, files_list)))
     assert len(epochs) > 0
     epochs, files_list = epochs[-1:], files_list[-1:]

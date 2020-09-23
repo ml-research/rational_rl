@@ -38,15 +38,26 @@ def load_activation_function(act_f, game_name, seed):
 
 
 def recover(regex):
-    filtered = list_files(regex, "agent_save")
+    filtered = list_files(f'checkpoint_{regex}', "checkpoints")
     try:
-        last_epoch = max([int(ep.split("_epoch_n_")[-1]) for ep in filtered])
+        last_epoch = max([int(ep.split("_epoch_")[-1]) for ep in filtered])
     except ValueError:
         print("ERROR: Could not find any corresponding file")
         exit(1)
     r2 = re.compile(".*" + str(last_epoch) + "$")
     filename = list(filter(r2.match, filtered))[0]
-    return filename, last_epoch
+    sep = "+" * 50 + "\n"
+    print(f"{sep}Found {filename} for recovery\n{sep}")
+    agent, mdp, scores = pickle.load(open(f"checkpoints/{filename}", 'rb'))
+    return agent, mdp, scores, last_epoch
+
+
+def checkpoint(agent, mdp, scores, filename, epoch, agent_save_dir='agent_save'):
+    """ Creates a checkpoint with a tuple """
+    path = f"checkpoints/checkpoint_{filename}_epoch_{epoch}"
+    makedirs("checkpoints", exist_ok=True)
+    pickle.dump((agent, mdp, scores), open(path, 'wb'))
+    agent.save(f"./{agent_save_dir}/{filename}_epoch_{epoch}")  # makes a checkpoint
 
 
 def print_epoch(epoch):
@@ -66,6 +77,7 @@ def list_files(regex, directory):
     all_saves = [f for f in listdir(directory)]
     filtered = list(filter(r.match, all_saves))
     return filtered
+
 
 
 def sepprint(*args):

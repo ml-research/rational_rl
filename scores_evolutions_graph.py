@@ -12,6 +12,7 @@ fig = plt.figure(figsize=(6, 4))
 
 
 save_folder = f"scores/dqn_{args.game.lower()}"
+save_folder = f"scores"
 base_filename = f"_scores{args.game}Deterministic-v4_seed"
 act_funcs = ["paus", "rpau", "lrelu", "silu", "onlysilu", "DDQN"]
 act_funcs_complete_names = ["PAUs", "Recurrent pau", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DDQN"]
@@ -20,15 +21,15 @@ min_seed_used = 10
 
 for act, act_name in zip(act_funcs, act_funcs_complete_names):
     means = []
-    # for seed_n in range(nb_seeds):
     for seed_n in range(nb_seeds):
         try:
             if act == "DDQN":
                 data_from_file = pickle.load(open(f"{save_folder}/DDQN{base_filename}{seed_n}_lrelu.pkl", "rb"))
             else:
+                print(f"{save_folder}/DQN{base_filename}{seed_n}_{act}.pkl")
                 data_from_file = pickle.load(open(f"{save_folder}/DQN{base_filename}{seed_n}_{act}.pkl", "rb"))
         except FileNotFoundError:
-            # print(f"File {base_filename}{seed_n}_{act}.pkl not found")
+            print(f"File {base_filename}{seed_n}_{act}.pkl not found")
             continue
         # case where stats and all_scores are stored
         if len(data_from_file[0]) == 2:
@@ -42,7 +43,8 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
         else:
             print("Something went wrong, please check score storage")
             exit(1)
-
+    if len(means) == 0:
+        continue
     mini = min([len(sub) for sub in means])
     for i, subl in enumerate(means):
         means[i] = subl[:mini]

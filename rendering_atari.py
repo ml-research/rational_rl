@@ -52,7 +52,7 @@ if __name__ == '__main__':
     make_deterministic(2)
 
 
-    agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_n_{args.epoch}"
+    agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}"
     agent = Agent.load(f"agent_save/{agent_f}")
 
     run_exp(agent, env, args)
