@@ -43,7 +43,7 @@ if args.load:
     file_name += "_pretrained"
 
 
-make_deterministic(args.seed)
+
 epsilon_test = Parameter(value=.05)
 epsilon_random = Parameter(value=1)
 
@@ -59,7 +59,6 @@ if not args.recover:
     # MDP
     mdp = Atari(config.game_name, config.width, config.height, ends_at_life=True,
                 history_length=config.history_length, max_no_op_actions=30)
-    mdp.seed(args.seed)
 
     # Policy
     epsilon = LinearParameter(value=1.,
@@ -95,6 +94,8 @@ if not args.recover:
         max_replay_size=config.max_replay_size
     )
 
+    make_deterministic(args.seed, mdp)
+
     if args.algo == "DQN":
         agent = DQN(mdp.info, pi, approximator,
                     approximator_params=approximator_params,
@@ -110,10 +111,12 @@ if not args.recover:
 
 else:
     prefix = f'{args.algo}_{file_name}_epoch_'
-    agent, mdp, scores, last_epoch = recover(prefix)
+    agent, mdp, scores, states_dict, last_epoch = recover(prefix)
+    make_deterministic(None, mdp, states_dict)
     pi = agent.policy
     epsilon = pi._epsilon
     init_epoch = last_epoch + 1
+
 
 core = Core(agent, mdp)
 
@@ -137,6 +140,9 @@ for epoch in range(init_epoch, config.n_epochs + 1):
     if epoch % 50 == 0:
         pi.set_epsilon(epsilon)
         checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
+        print("Saving the agent")
+        with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
+            pickle.dump(scores, f)
     rtpt.setproctitle()
 
 

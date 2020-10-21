@@ -18,12 +18,21 @@ import matplotlib.pyplot as plt
 
 
 
-def make_deterministic(seed):
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-
+def make_deterministic(seed, mdp, states_dict=None):
+    if states_dict is None:
+        np.random.seed(seed)
+        mdp.seed(seed)
+        torch.manual_seed(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        print(f"Set all environment deterministic to seed {seed}")
+    else:
+        np.random.set_state(states_dict["numpy"])
+        torch.random.set_rng_state(states_dict["torch"])
+        mdp.env.env.np_random.set_state(states_dict["env"])
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        print(f"Reset environment to recovered random state ")
 
 def load_activation_function(act_f, game_name, seed):
     """
@@ -48,17 +57,25 @@ def recover(regex):
     filename = list(filter(r2.match, filtered))[0]
     sep = "+" * 50 + "\n"
     print(f"{sep}Found {filename} for recovery\n{sep}")
-    agent, mdp, scores = pickle.load(open(f"checkpoints/{filename}", 'rb'))
-    return agent, mdp, scores, last_epoch
+    agent, mdp, scores, states_dict = pickle.load(open(f"checkpoints/{filename}", 'rb'))
+    return agent, mdp, scores, states_dict, last_epoch
 
 
 def checkpoint(agent, mdp, scores, filename, epoch, agent_save_dir='agent_save'):
-    """ Creates a checkpoint with a tuple """
+    """
+    Creates a checkpoint with a tuple to be able to recover, remove the \
+    last checkpoint and save approximator with few attributes
+    """
     path = f"checkpoints/checkpoint_{filename}_epoch_{epoch}"
     makedirs("checkpoints", exist_ok=True)
-    pickle.dump((agent, mdp, scores), open(path, 'wb'))
-    agent.save(f"./{agent_save_dir}/{filename}_epoch_{epoch}")  # makes a checkpoint
-
+    random_state_dict = {}
+    random_state_dict["numpy"] = np.random.get_state()
+    random_state_dict["torch"] = torch.random.get_rng_state()
+    random_state_dict["env"] = mdp.env.env.np_random.get_state()
+    pickle.dump((agent, mdp, scores, random_state_dict), open(path, 'wb'))
+    if epoch > 50:
+        remove(f"checkpoints/checkpoint_{filename}_epoch_{epoch-50}")
+    save_agent(agent, f"{agent_save_dir}/{filename}_epoch_{epoch}")
 
 def print_epoch(epoch):
     print('################################################################')
@@ -86,19 +103,13 @@ def sepprint(*args):
     print("\n" + "-" * 30)
 
 
-def save_approximator(agent, path):
+def save_agent(agent, path):
     """
     Used in order to avoid using save method from mushroom_rl agent that saves
     way too much caracteristics
     """
     makedirs(path, exist_ok=True)
-    pickle.dump(agent.approximator, open(path + "/approximator.pickle", "wb"))
-    pickle.dump(agent.policy, open(path + "/policy.pickle", "wb"))
-    agent_config = dict(
-            type=type(agent),
-            save_attributes=agent._save_attributes
-        )
-    pickle.dump(agent_config, open(path + "/agent.config", "wb"))
+    agent.save(path+".zip")
 
 
 def remove_heavy(path):
