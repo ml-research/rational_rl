@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-devel
+FROM nvidia/cuda:10.2-devel
 ARG 	folder_name=rl_paus
 RUN 	apt-get update -y && apt-get install -y python3-pyqt5 python3-pip
 RUN	mkdir /home/$folder_name
