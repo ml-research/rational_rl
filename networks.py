@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from pau_torch.pade_activation_unit import PAU
 from utils import sepprint
 from activation_functions import SiLU, dSiLU
-from physt import h1 as hist1
+# from physt import h1 as hist1
 
 USE_CUDA = torch.cuda.is_available()
 if USE_CUDA:
