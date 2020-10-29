@@ -12,7 +12,8 @@ rc('text', usetex=True)
 path = os.getcwd()
 df_human = pd.read_csv(path+'/scores_tables/scores_table_human_normalized.csv')
 df_human = df_human[df_human.game != 'Skiing']
-df_human = df_human.sort_values('PAUS', ascending = False)
+df_human["max_both"] = df_human[["SPAU", "PAUS"]].max(axis=1)
+df_human = df_human.sort_values('max_both', ascending = False)
 print(df_human)
 
 sns.set(font_scale=2)
@@ -21,14 +22,14 @@ palette = sns.color_palette('deep')
 
 
 sns.barplot(x = 'PAUS', y = 'game', data = df_human,
-            label = 'PAUs', color = palette[1], edgecolor = 'w')
+            label = 'RN', color = palette[1], edgecolor = 'w')
 sns.barplot(x = 'SPAU', y = 'game', data = df_human,
-            label = 'Recurrent PAU', color = palette[0], edgecolor = 'w')
+            label = 'RRN', color = palette[0], edgecolor = 'w')
 #sns.set_color_codes('muted')
 chart = sns.barplot(x = 'LreLU', y = 'game', data = df_human,
             label = 'LReLU', color = palette[2], edgecolor = 'w')
 
-ax.legend(ncol = 3, loc = 'upper left', bbox_to_anchor=(-0.31, 1.1)) #, bbox_to_anchor=(0., -1.11)
+ax.legend(ncol = 3, loc = 'upper left', bbox_to_anchor=(-0.01, 1.08), fontsize=20) #, bbox_to_anchor=(0., -1.11)
 
 ax.axvline(100, ls='--', color="darkred")
 

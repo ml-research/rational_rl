@@ -16,7 +16,7 @@
    width="1180pt"
    id="svg11045"
    sodipodi:docname="All_comp_final.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
      id="metadata11049">
     <rdf:RDF>
@@ -38,16 +38,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1570"
-     inkscape:window-height="1016"
+     inkscape:window-width="3798"
+     inkscape:window-height="2004"
      id="namedview11047"
      showgrid="false"
      inkscape:zoom="0.45930372"
-     inkscape:cx="909.22466"
-     inkscape:cy="499.83939"
-     inkscape:window-x="212"
-     inkscape:window-y="1107"
-     inkscape:window-maximized="1"
+     inkscape:cx="144.14508"
+     inkscape:cy="645.51243"
+     inkscape:window-x="3856"
+     inkscape:window-y="135"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg11045" />
   <defs
      id="defs9632"
@@ -82680,21 +82680,21 @@
      y="16.493948"
      id="text14366-0"><tspan
        sodipodi:role="line"
-       id="tspan14364-6"
        style="font-size:18.00000191px;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:round"
        x="521.27167"
-       y="16.493948">PAUs</tspan></text>
+       y="16.493948"
+       id="tspan16409">Non Recurrent</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:30.00000191px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:round"
-     x="1026.5397"
+     x="1046.6273"
      y="16.957876"
      id="text14366-77"><tspan
        sodipodi:role="line"
        id="tspan14364-9"
        style="font-size:18.00000191px;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:round"
-       x="1026.5397"
-       y="16.957876">Recurrent PAU</tspan></text>
+       x="1046.6273"
+       y="16.957876">Recurrent</tspan></text>
   <path
      style="fill:none;stroke:#000000;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4.49999999, 1.5;stroke-dashoffset:0;stroke-opacity:0.61568627"
      d="M 971.9124,22.68041 V 660.18555"

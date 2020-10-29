@@ -5,12 +5,12 @@ import numpy as np
 import sys
 
 if "--all" in sys.argv:
-    act_fs = ["lrelu", "rpau", "paus", "onlysilu", "_silu", "Random", "DDQN"]
-    act_names = ["LReLU", "RPAU", "PAUS",  "SiLU", "d+SiLU", "Random", "DDQN"]
+    act_fs = ["lrelu", "rpau", "paus", "onlysilu", "d+silu", "Random", "DDQN"]
+    act_names = ["LReLU", "RRN", "RN",  "SiLU", "d+SiLU", "Random", "DDQN"]
     suffix = "all"
 elif "--pretrained" in sys.argv:
-    act_fs = ["lrelu", "rpau", "rpau_pretrained", "paus", "paus_pretrained"]
-    act_names = ["LReLU", "RPAU", "RPAU pretrained", "PAUS", "pretrained paus"]
+    act_fs = ["lrelu", "RRN", "rpau_pretrained", "paus", "paus_pretrained"]
+    act_names = ["LReLU", "RRN", "RPAU pretrained", "PAUS", "pretrained paus"]
     suffix = "pretrained"
 else:
     print("Please provide the activation functions for the table:")

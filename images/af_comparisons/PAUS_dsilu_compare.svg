@@ -15,8 +15,8 @@
    viewBox="0 0 780 580"
    width="780pt"
    id="svg3914"
-   sodipodi:docname="PAUS_dsilu_compare_sq.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   sodipodi:docname="PAUS_dsilu_compare.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <metadata
      id="metadata3918">
     <rdf:RDF>
@@ -38,16 +38,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1043"
+     inkscape:window-width="3798"
+     inkscape:window-height="2038"
      id="namedview3916"
      showgrid="false"
-     inkscape:zoom="0.75958735"
-     inkscape:cx="547.96885"
-     inkscape:cy="467.63106"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
+     inkscape:zoom="1.5191747"
+     inkscape:cx="230.22288"
+     inkscape:cy="341.69639"
+     inkscape:window-x="3856"
+     inkscape:window-y="101"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg3914" />
   <defs
      id="defs3275"
@@ -9369,6 +9369,39 @@
        inkscape:connector-curvature="0"
        d="M 34.1875,63.1875 20.796875,26.90625 h 26.8125 z m -5.578125,9.71875 h 11.1875 L 67.578125,0 h -10.25 L 50.6875,18.703125 H 17.828125 L 11.1875,0 H 0.78125 Z"
        id="DejaVuSans-65-2" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath24099">
+      <rect
+         style="opacity:0.82300002;fill:#ffff9f;fill-opacity:0.76709403;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect24101"
+         width="368.46548"
+         height="245.4109"
+         x="23.225327"
+         y="30.483643" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath24105">
+      <rect
+         style="opacity:0.82300002;fill:#ffff9f;fill-opacity:0.76709403;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect24107"
+         width="373.87637"
+         height="244.01454"
+         x="18.257677"
+         y="31.266048" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath24171">
+      <rect
+         style="opacity:1;fill:#ffffa8;fill-opacity:0.70512821;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect24173"
+         width="26.288948"
+         height="11.108005"
+         x="25.178139"
+         y="12.010684" />
+    </clipPath>
   </defs>
   <defs
      id="defs3912">
@@ -9395,7 +9428,8 @@
          inkscape:connector-curvature="0"
          d="M 0,288 H 432 V 0 H 0 Z"
          style="fill:#ffffff;stroke-linecap:butt;stroke-linejoin:round"
-         id="path25153" />
+         id="path25153"
+         clip-path="url(#clipPath24105)" />
     </g>
     <g
        id="axes_1"
@@ -13288,7 +13322,8 @@
          inkscape:connector-curvature="0"
          d="M 0,288 H 432 V 0 H 0 Z"
          style="fill:#ffffff;stroke-linecap:butt;stroke-linejoin:round"
-         id="path21108" />
+         id="path21108"
+         clip-path="url(#clipPath24099)" />
     </g>
     <g
        id="axes_1-9"
@@ -17620,4 +17655,125 @@
        style="font-size:21.99999809px;stroke-width:0.75;stroke-linecap:butt;stroke-linejoin:round"
        x="321.16254"
        y="323.62216">Tutankham</tspan></text>
+  <g
+     id="g24123"
+     transform="translate(77.509191,72.078611)"
+     style="stroke-linecap:butt;stroke-linejoin:round">
+    <rect
+       y="12.010683"
+       x="25.178144"
+       height="11.601694"
+       width="28.387125"
+       id="rect24113"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1" />
+    <text
+       transform="scale(1.0287858,0.97201964)"
+       id="text24111"
+       y="22.768356"
+       x="25.152531"
+       style="font-style:normal;font-weight:normal;font-size:30.86357117px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+       xml:space="preserve"><tspan
+         y="22.768356"
+         x="25.152531"
+         style="font-size:13px;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+         id="tspan24109"
+         sodipodi:role="line">RAF</tspan></text>
+  </g>
+  <g
+     style="stroke-linecap:butt;stroke-linejoin:round"
+     transform="translate(77.509191,72.078611)"
+     id="g24131">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect24125"
+       width="28.387125"
+       height="11.601694"
+       x="25.178144"
+       y="12.010683" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:30.86357117px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+       x="25.152531"
+       y="22.768356"
+       id="text24129"
+       transform="scale(1.0287858,0.97201964)"><tspan
+         sodipodi:role="line"
+         id="tspan24127"
+         style="font-size:13px;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+         x="25.152531"
+         y="22.768356">RAF</tspan></text>
+  </g>
+  <g
+     style="stroke-linecap:butt;stroke-linejoin:round"
+     transform="translate(444.42236,72.331063)"
+     id="g24131-4">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect24125-9"
+       width="28.387125"
+       height="11.601694"
+       x="25.178144"
+       y="12.010683"
+       clip-path="url(#clipPath24171)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:30.86357117px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+       x="25.152531"
+       y="22.768356"
+       id="text24129-2"
+       transform="scale(1.0287858,0.97201964)"><tspan
+         sodipodi:role="line"
+         id="tspan24127-0"
+         style="font-size:13px;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+         x="25.152531"
+         y="22.768356">RAF</tspan></text>
+  </g>
+  <g
+     style="stroke-linecap:butt;stroke-linejoin:round"
+     transform="translate(443.20941,353.35798)"
+     id="g24131-6">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect24125-8"
+       width="28.387125"
+       height="11.601694"
+       x="25.178144"
+       y="12.010683" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:30.86357117px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+       x="25.152531"
+       y="22.768356"
+       id="text24129-9"
+       transform="scale(1.0287858,0.97201964)"><tspan
+         sodipodi:role="line"
+         id="tspan24127-2"
+         style="font-size:13px;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+         x="25.152531"
+         y="22.768356">RAF</tspan></text>
+  </g>
+  <g
+     style="stroke-linecap:butt;stroke-linejoin:round"
+     transform="translate(75.534431,352.86429)"
+     id="g24131-6-9">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.75118119;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3.00472467, 1.50236233;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect24125-8-6"
+       width="28.387125"
+       height="11.601694"
+       x="25.178144"
+       y="12.010683" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:30.86357117px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+       x="25.152531"
+       y="22.768356"
+       id="text24129-9-2"
+       transform="scale(1.0287858,0.97201964)"><tspan
+         sodipodi:role="line"
+         id="tspan24127-2-1"
+         style="font-size:13px;stroke-width:0.77158916;stroke-linecap:butt;stroke-linejoin:round"
+         x="25.152531"
+         y="22.768356">RAF</tspan></text>
+  </g>
 </svg>
