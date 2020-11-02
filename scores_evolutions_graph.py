@@ -8,14 +8,16 @@ import seaborn as sns
 sns.set_style("whitegrid")
 args = graph_parser.parse_args()
 
-fig = plt.figure(figsize=(6, 4))
+fig = plt.figure(figsize=(3.7, 2))
+# fig = plt.figure(figsize=(6, 4))
 
 
 save_folder = f"scores/dqn_{args.game.lower()}"
-save_folder = f"scores"
 base_filename = f"_scores{args.game}Deterministic-v4_seed"
-act_funcs = ["paus", "rpau", "lrelu", "silu", "onlysilu", "DDQN"]
-act_funcs_complete_names = ["PAUs", "Recurrent pau", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DDQN"]
+# act_funcs = ["paus", "rpau", "lrelu", "d+silu", "onlysilu", "DDQN"]
+# act_funcs_complete_names = ["RN", "RRN", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DDQN"]
+act_funcs = ["paus", "rpau", "lrelu", "DDQN"]
+act_funcs_complete_names = ["RN", "RRN", "LReLU", "LReLU"]
 nb_seeds = 5
 min_seed_used = 10
 
@@ -26,7 +28,6 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
             if act == "DDQN":
                 data_from_file = pickle.load(open(f"{save_folder}/DDQN{base_filename}{seed_n}_lrelu.pkl", "rb"))
             else:
-                print(f"{save_folder}/DQN{base_filename}{seed_n}_{act}.pkl")
                 data_from_file = pickle.load(open(f"{save_folder}/DQN{base_filename}{seed_n}_{act}.pkl", "rb"))
         except FileNotFoundError:
             print(f"File {base_filename}{seed_n}_{act}.pkl not found")
@@ -60,18 +61,21 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
     if act_name == "DDQN":
         lab = "DDQN LReLU"
     else:
-        lab = f"DQN {act_name}"
+        if "RN" in act_name:
+            lab = f"DQN {act_name}"
+        else:
+            lab=None
     plt.plot(mean, label=lab)
-    if args.game == "Asterix":
-        plt.legend(fancybox=True, framealpha=0.5, fontsize=11.5)
+    # if args.game == "Asterix":
+    plt.legend(fancybox=True, framealpha=0.5, fontsize=11.5)
     plt.fill_between(range(len(mean)), mean - standard_dev, mean + standard_dev,
                      alpha=0.5)
 
 
-file_title = f"{args.game}_scores"
-plt.xlabel("epochs")
-plt.ylabel("score")
-plt.title(file_title, fontsize=14)
+file_title = f"{args.game}_scores_r"
+# plt.xlabel("epochs")
+# plt.ylabel("score")
+# plt.title(file_title, fontsize=14)
 if args.store:
     fig = plt.gcf()
     save_folder = "images/scores_graphs"
