@@ -66,7 +66,8 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
         if "RN" in act_name:
             lab = f"DQN {act_name}"
         else:
-            lab=None
+            lab = None
+            lab = f"DQN {act_name}"
     if args.csv:
         df_list.append(pd.DataFrame(mean, columns=[act_name]))
         continue
@@ -102,6 +103,6 @@ else:
                                                          alpha_over=1.5,
                                                          start_visible=True)
     plugins.connect(fig, interactive_legend)
-    with open('platest.html', 'w') as f:
+    with open(f'html_plots/{args.game}_plot.html', 'w') as f:
         f.write(mpld3.fig_to_html(plt.gcf()))
     # mpld3.show()
