@@ -108,7 +108,6 @@ def save_agent(agent, path):
     Used in order to avoid using save method from mushroom_rl agent that saves
     way too much caracteristics
     """
-    makedirs(path, exist_ok=True)
     agent.save(path+".zip")
 
 
@@ -157,6 +156,9 @@ class GymRenderer():
 
     def repeat_upsample(self, rgb_array, k=4, l=4, err=[]):
         # repeat kinda crashes if k/l are zero
+        if rgb_array is None:
+            print("None rgb_array for upsampling")
+            exit(0)
         if k <= 0 or l <= 0:
             if not err:
                 print("Number of repeats must be larger than 0, k: {}, l: {}, returning default array!".format(k, l))

@@ -1,25 +1,27 @@
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt, mpld3
 import pickle
 import numpy as np
+import pandas as pd
 from parsers import graph_parser
-import seaborn as sns
+# import seaborn as sns
+from mpld3 import plugins
 
-
-sns.set_style("whitegrid")
+# sns.set_style("whitegrid")
 args = graph_parser.parse_args()
 
-fig = plt.figure(figsize=(3.7, 2))
-# fig = plt.figure(figsize=(6, 4))
+# fig = plt.figure(figsize=(3.7, 2))
+fig = plt.figure(figsize=(6, 4))
 
 
 save_folder = f"scores/dqn_{args.game.lower()}"
 base_filename = f"_scores{args.game}Deterministic-v4_seed"
-# act_funcs = ["paus", "rpau", "lrelu", "d+silu", "onlysilu", "DDQN"]
-# act_funcs_complete_names = ["RN", "RRN", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DDQN"]
-act_funcs = ["paus", "rpau", "lrelu", "DDQN"]
-act_funcs_complete_names = ["RN", "RRN", "LReLU", "LReLU"]
+act_funcs = ["paus", "rpau", "lrelu", "d+silu", "onlysilu", "DDQN"]
+act_funcs_complete_names = ["RN", "RRN", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DDQN"]
+# act_funcs = ["paus", "rpau", "lrelu", "DDQN"]
+# act_funcs_complete_names = ["RN", "RRN", "LReLU", "LReLU"]
 nb_seeds = 5
 min_seed_used = 10
+df_list = []
 
 for act, act_name in zip(act_funcs, act_funcs_complete_names):
     means = []
@@ -65,21 +67,41 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
             lab = f"DQN {act_name}"
         else:
             lab=None
+    if args.csv:
+        df_list.append(pd.DataFrame(mean, columns=[act_name]))
+        continue
     plt.plot(mean, label=lab)
     # if args.game == "Asterix":
-    plt.legend(fancybox=True, framealpha=0.5, fontsize=11.5)
+    # plt.legend(fancybox=True, framealpha=0.5, fontsize=11.5)
     plt.fill_between(range(len(mean)), mean - standard_dev, mean + standard_dev,
                      alpha=0.5)
 
-
-file_title = f"{args.game}_scores_r"
-# plt.xlabel("epochs")
-# plt.ylabel("score")
-# plt.title(file_title, fontsize=14)
+if args.csv:
+    complete_df = pd.concat(df_list, 1)
+    complete_df.to_csv(f"scores/csv/{args.game}_scores.csv")
+    exit()
+file_title = f"{args.game}"
+plt.xlabel("epochs")
+plt.ylabel("score")
+plt.title(file_title, fontsize=14)
 if args.store:
     fig = plt.gcf()
     save_folder = "images/scores_graphs"
-    fig.savefig(f"{save_folder}/{file_title}.svg")
-    print(f"Saved in {save_folder}/{file_title}.svg")
+    fig.savefig(f"{save_folder}/{file_title}_scores.svg")
+    print(f"Saved in {save_folder}/{file_title}_scores.svg")
 else:
-    plt.show()
+    # plt.show()
+    # define interactive legend
+    ax = plt.gca()
+
+    handles, labels = ax.get_legend_handles_labels() # return lines and labels
+    interactive_legend = plugins.InteractiveLegendPlugin(zip(handles,
+                                                             ax.collections),
+                                                         labels,
+                                                         alpha_unsel=0,
+                                                         alpha_over=1.5,
+                                                         start_visible=True)
+    plugins.connect(fig, interactive_legend)
+    with open('platest.html', 'w') as f:
+        f.write(mpld3.fig_to_html(plt.gcf()))
+    # mpld3.show()

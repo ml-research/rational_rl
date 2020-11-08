@@ -24,6 +24,8 @@ graph_parser.add_argument("-g", "--game", help="Game to train on",
                           required=True, action="store", dest="game")
 graph_parser.add_argument("-s", "--store", help="Save the graph in svg file (instead of displaying)",
                           action="store_true", dest="store")
+graph_parser.add_argument("--csv_score", help="Creates a file csv file of the result",
+                          action="store_true", dest="csv")
 
 rendering_parser = argparse.ArgumentParser()
 rendering_parser.add_argument("-af", "--act", help="Activation function to use",

@@ -14,6 +14,7 @@ df_human = pd.read_csv(path+'/scores_tables/scores_table_human_normalized.csv')
 df_human = df_human[df_human.game != 'Skiing']
 df_human["max_both"] = df_human[["SPAU", "PAUS"]].max(axis=1)
 df_human = df_human.sort_values('max_both', ascending = False)
+df_human.to_csv('scores/csv/human_normalized_final_scores.csv')
 print(df_human)
 
 sns.set(font_scale=2)

@@ -1,7 +1,6 @@
 import pickle
 import torch.optim as optim
 import torch.nn.functional as F
-from mushroom_rl.algorithms.agent import Agent
 from mushroom_rl.algorithms.value import DQN, DoubleDQN
 from mushroom_rl.approximators.parametric import TorchApproximator
 from mushroom_rl.core import Core
@@ -9,9 +8,9 @@ from mushroom_rl.environments import Atari
 from mushroom_rl.policy import EpsGreedy
 from mushroom_rl.utils.parameters import LinearParameter, Parameter
 from networks import Network, USE_CUDA
-from utils import get_stats, print_epoch, recover, sepprint, \
+from utils import get_stats, recover, sepprint, print_epoch, \
                   make_deterministic, checkpoint, \
-                  RTPT, remove_heavy, load_activation_function
+                  RTPT, load_activation_function
 from parsers import parser
 import json
 from collections import namedtuple

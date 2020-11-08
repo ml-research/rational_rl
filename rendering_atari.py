@@ -49,10 +49,11 @@ if __name__ == '__main__':
     env = Atari(config.game_name, config.width, config.height, ends_at_life=True,
                 history_length=config.history_length, max_no_op_actions=30)
     env.seed(args.seed)
-    make_deterministic(2)
+    make_deterministic(0, env)
 
 
-    agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}"
+    agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}.zip"
+    # agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}"
     agent = Agent.load(f"agent_save/{agent_f}")
 
     run_exp(agent, env, args)

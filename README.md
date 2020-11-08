@@ -32,7 +32,7 @@ This last command will instantiate a container from your image and run bash into
 
 * To make the scores plot of the agent on Asterix and store it:<br/>
 `python3 scores_evolutions_graph.py -g Asterix -s` <br/>
-Creating the following image
+Creating the following image: <br/>
 ![Alt text](./images/scores_graphs/Asterix_scores.svg)
 
 * To get the raw scores on all activation functions and all game:<br/>
