@@ -1,6 +1,7 @@
 from mushroom_rl.utils.dataset import compute_metrics, compute_J
 from os import listdir, makedirs, remove
 from os.path import isfile, join
+from rational_torch import Rational
 import torch
 import numpy as np
 import re
@@ -172,7 +173,7 @@ class GymRenderer():
 
     def render(self, mode="zoomed"):
         if self.record:
-            self.env.render()
+            # self.env.render()
             self.video_rec.capture_frame()
         elif mode == "zoomed":
             rgb = self.env.render('rgb_array')
@@ -215,3 +216,42 @@ class RTPT():
             rest = remaining_time
         complete_title = self.base_title + f"{days}d:{rest}"
         setproctitle(complete_title)
+
+
+def update_network(rational_net):
+    inp = torch.rand((32,4,84,84)).cuda()
+    with torch.no_grad():
+        old_value = rational_net(inp).sum()
+    new_func1 = Rational()
+    new_func2 = Rational()
+    new_func3 = Rational()
+    new_func4 = Rational()
+    rational_net._h1.bias.requires_grad_(False)
+    rational_net._h2.bias.requires_grad_(False)
+    rational_net._h3.bias.requires_grad_(False)
+    rational_net._h4.bias.requires_grad_(False)
+    rational_net._h1.bias += rational_net.act_func1.center.item()
+    rational_net._h2.bias += rational_net.act_func2.center.item()
+    rational_net._h3.bias += rational_net.act_func3.center.item()
+    rational_net._h4.bias += rational_net.act_func4.center.item()
+    new_func1._from_old(rational_net.act_func1)
+    new_func2._from_old(rational_net.act_func2)
+    new_func3._from_old(rational_net.act_func3)
+    new_func4._from_old(rational_net.act_func4)
+    rational_net._h1.bias.requires_grad_(True)
+    rational_net._h2.bias.requires_grad_(True)
+    rational_net._h3.bias.requires_grad_(True)
+    rational_net._h4.bias.requires_grad_(True)
+    rational_net.act_func1 = new_func1
+    rational_net.act_func2 = new_func2
+    rational_net.act_func3 = new_func3
+    rational_net.act_func4 = new_func4
+
+    if not old_value == rational_net(inp).sum():
+        print("old value different from new one")
+        print(old_value)
+        print(rational_net(inp).sum())
+    rational_net.act_func1.input_retrieve_mode()
+    rational_net.act_func2.input_retrieve_mode()
+    rational_net.act_func3.input_retrieve_mode()
+    rational_net.act_func4.input_retrieve_mode()

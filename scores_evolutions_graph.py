@@ -1,12 +1,11 @@
-import matplotlib.pyplot as plt, mpld3
+import matplotlib.pyplot as plt
 import pickle
 import numpy as np
 import pandas as pd
 from parsers import graph_parser
-# import seaborn as sns
-from mpld3 import plugins
+import seaborn as sns
 
-# sns.set_style("whitegrid")
+sns.set_style("whitegrid")
 args = graph_parser.parse_args()
 
 # fig = plt.figure(figsize=(3.7, 2))
@@ -21,7 +20,7 @@ act_funcs_complete_names = ["RN", "RRN", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DD
 # act_funcs_complete_names = ["RN", "RRN", "LReLU", "LReLU"]
 nb_seeds = 5
 min_seed_used = 10
-df_list = []
+df_mlist, df_slist = [], []
 
 for act, act_name in zip(act_funcs, act_funcs_complete_names):
     means = []
@@ -69,7 +68,8 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
             lab = None
             lab = f"DQN {act_name}"
     if args.csv:
-        df_list.append(pd.DataFrame(mean, columns=[act_name]))
+        df_mlist.append(pd.DataFrame({f'{act_name}': mean}))
+        df_slist.append(pd.DataFrame({f'{act_name}': standard_dev}))
         continue
     plt.plot(mean, label=lab)
     # if args.game == "Asterix":
@@ -78,8 +78,10 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
                      alpha=0.5)
 
 if args.csv:
-    complete_df = pd.concat(df_list, 1)
-    complete_df.to_csv(f"scores/csv/{args.game}_scores.csv")
+    complete_dfm = pd.concat(df_mlist, 1)
+    complete_dfs = pd.concat(df_slist, 1)
+    complete_dfm.to_csv(f"scores/csv/{args.game}_mean_scores.csv")
+    complete_dfs.to_csv(f"scores/csv/{args.game}_std_scores.csv")
     exit()
 file_title = f"{args.game}"
 plt.xlabel("epochs")
@@ -91,18 +93,4 @@ if args.store:
     fig.savefig(f"{save_folder}/{file_title}_scores.svg")
     print(f"Saved in {save_folder}/{file_title}_scores.svg")
 else:
-    # plt.show()
-    # define interactive legend
-    ax = plt.gca()
-
-    handles, labels = ax.get_legend_handles_labels() # return lines and labels
-    interactive_legend = plugins.InteractiveLegendPlugin(zip(handles,
-                                                             ax.collections),
-                                                         labels,
-                                                         alpha_unsel=0,
-                                                         alpha_over=1.5,
-                                                         start_visible=True)
-    plugins.connect(fig, interactive_legend)
-    with open(f'html_plots/{args.game}_plot.html', 'w') as f:
-        f.write(mpld3.fig_to_html(plt.gcf()))
-    # mpld3.show()
+    plt.show()

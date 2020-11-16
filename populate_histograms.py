@@ -1,4 +1,4 @@
-from utils import repair_agent
+from utils import repair_agent, update_network
 from mushroom_rl.algorithms.agent import Agent
 import os
 from mushroom_rl.environments import Atari
@@ -13,7 +13,7 @@ def populate_histograms(agent, env, args):
         network = agent.model.network
     elif hasattr(agent, "approximator"):
         network = agent.policy._approximator.model.network
-    network.set_hists()
+    update_network(network)
     args.record = False
     args.video_title = None
     args.no_display = True
@@ -24,14 +24,16 @@ def main():
     parser = argparse.ArgumentParser()
 
     agents_folder = f'agent_save'
-    regex = f"DQN_*Deterministic-v4_SEED*_*_epoch_*"
-    folder_list = [x[0] for x in os.walk(agents_folder)]
+    folder_list = [x for x in list(os.walk(agents_folder))[0][2]]
     # print(folder_list)
     # exit()
     for folder in folder_list:
-        if not "DQN" in folder or "populated" in folder:
+        if not "DQN" in folder[:3] or "populated" in folder or not "pau" in folder:
             continue
-        ag = Agent.load(folder)
+        print(f"{agents_folder}/{folder}")
+        ag = Agent.load(f"{folder}")
+        rat = ag.approximator.model.network.act_func1
+        rat.show()
         args = parser.parse_args()
         # # for version compatibility
         game_info = folder.split("DQN_")[1]
@@ -45,7 +47,9 @@ def main():
                     history_length=config.history_length, max_no_op_actions=30)
         repair_agent(ag)
         populate_histograms(ag, env, args)
-        ag.save(folder)
+        ag.save(f"{agents_folder}/populated/{folder}")
+        import ipdb; ipdb.set_trace()
+        print("\n\n")
 
 if __name__ == '__main__':
     main()

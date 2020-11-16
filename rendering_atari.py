@@ -12,7 +12,7 @@ def run_exp(agent, env, args):
         renderer = None
     else:
         if args.record and args.video_title is None:
-            args.video_title = f"{args.algo}_{args.game}_{args.act_f}"
+            args.video_title = f"{args.algo}_{args.game}_{args.act_f}_s{args.seed}"
         renderer = GymRenderer(env, record=args.record, title=args.video_title)
     if "pau" in args.act_f:
         repair_agent(agent)

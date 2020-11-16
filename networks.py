@@ -1,10 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from pau_torch.pade_activation_unit import PAU
+from rational_torch import Rational
 from utils import sepprint
 from activation_functions import SiLU, dSiLU
-# from physt import h1 as hist1
 
 USE_CUDA = torch.cuda.is_available()
 if USE_CUDA:
@@ -47,7 +46,7 @@ class Network(nn.Module):
                 self.act_func3 = self.act_func1
                 self.act_func4 = self.act_func1
             else:
-                self.act_func1 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+                self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
                 self.act_func2 = self.act_func1
                 self.act_func3 = self.act_func1
                 self.act_func4 = self.act_func1
@@ -58,10 +57,10 @@ class Network(nn.Module):
                 self.act_func3 = loaded_act_f[2]
                 self.act_func4 = loaded_act_f[3]
             else:
-                self.act_func1 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func2 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func3 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func4 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+                self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+                self.act_func2 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+                self.act_func3 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+                self.act_func4 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
         elif activation_function == "relu":
             self.act_func1 = F.relu
             self.act_func2 = self.act_func1
@@ -90,9 +89,6 @@ class Network(nn.Module):
             self.act_func4 = self.act_func3
 
 
-
-        # self.set_hists()
-
     def forward(self, state, action=None):
         x1 = self._h1(state.float() / 255.)
         h = self.act_func1(x1)
@@ -115,9 +111,3 @@ class Network(nn.Module):
             q_acted = torch.squeeze(q.gather(1, action.long()))
 
             return q_acted
-
-    def set_hists(self):
-        self.inp1 = hist1(None, "fixed_width", bin_width=0.1, adaptive=True)
-        self.inp2 = hist1(None, "fixed_width", bin_width=0.1, adaptive=True)
-        self.inp3 = hist1(None, "fixed_width", bin_width=0.1, adaptive=True)
-        self.inp4 = hist1(None, "fixed_width", bin_width=0.1, adaptive=True)
