@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from rational_torch import Rational
+from rational.torch import Rational
 from utils import sepprint
 from activation_functions import SiLU, dSiLU
 
@@ -16,7 +16,7 @@ class Network(nn.Module):
     n_features = 512
 
     def __init__(self, input_shape, output_shape, activation_function,
-                 freeze_pau, loaded_act_f=None, **kwargs):
+                 freeze_pau=False, loaded_act_f=None, **kwargs):
         super().__init__()
 
         n_input = input_shape[0]

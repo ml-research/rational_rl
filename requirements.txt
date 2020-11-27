@@ -1,8 +1,8 @@
-pau
+rational-activations
 matplotlib
 seaborn
-setproctitle==1.1.10
-physt==0.4.10.1
-mushroom_rl>=1.5.2
-pandas==1.0.3
+setproctitle
+physt
+mushroom_rl
+pandas
 

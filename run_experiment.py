@@ -65,7 +65,7 @@ if not args.recover:
                               n=1000000)
 
     pi = EpsGreedy(epsilon=epsilon_random)
-
+    # import ipdb; ipdb.set_trace()
     # Approximator
     input_shape = (config.history_length, config.height, config.width)
     approximator_params = dict(
