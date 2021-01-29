@@ -66,6 +66,16 @@ class Network(nn.Module):
                 self.act_func2 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
                 self.act_func3 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
                 self.act_func4 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        elif activation_function == "r2r2":
+            self.act_func1 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+            self.act_func2 = self.act_func1
+            self.act_func3 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+            self.act_func4 = self.act_func3
+        elif activation_function == "r3r":
+            self.act_func1 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+            self.act_func2 = self.act_func1
+            self.act_func3 = self.act_func1
+            self.act_func4 = PAU(cuda=USE_CUDA).requires_grad_(not freeze_pau)
         elif activation_function == "relu":
             self.act_func1 = F.relu
             self.act_func2 = self.act_func1

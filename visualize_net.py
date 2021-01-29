@@ -96,15 +96,14 @@ def compare_acts(acts, input_dists, seed="", limit=1, axs=None, silu_comp=False)
     edc = (0.5, 0.5, 0.5, 0.6)
     if len(acts) > 1:
         for i, (ax, act, inp_dist) in enumerate(zip(axs.flat, acts, input_dists)):
-            bins, hist = plottable_bins(inp_dist, 0.001)
-            edge0 = bins.min()
-            edge1 = bins.max()
-            size = edge1 - edge0
-            rangin = (edge0 - size//2, edge1 + size//2)
-            xs = torch.linspace(*rangin, 1000, device='cuda')
+            inp_dist = act.show(display=False)
+            hist = inp_dist['hist']['freq']
+            bins = inp_dist['hist']['bins']
+            xs = inp_dist['line']['x']
+            padding = (xs[-1] - xs[0])/2
+            xs = torch.arange(xs[0] - padding, xs[-1] + padding,
+                              xs[1] - xs[0]).cuda()
             ys = act(xs)
-            init_scale = ys.max() - ys.min()
-            scale = torch.tensor(1.)
             ax.set_zorder(1)
             ax.patch.set_visible(False)
             # if silu_comp:
@@ -115,22 +114,23 @@ def compare_acts(acts, input_dists, seed="", limit=1, axs=None, silu_comp=False)
             #     label=f"adjusted dSiLU")
             ax2 = ax.twinx()
             ax2.set_yticks([])
-            ax2.bar(bins, hist/hist.max(), width=inp_dist.bin_sizes[0],
+            ax2.bar(bins, hist, width=bins[1] - bins[0],
                     color=edc, edgecolor=edc)
-            ax.plot(xs.cpu().detach().numpy(),
-                    ys.cpu().detach().numpy(), 'b-', label=f"PAU{i+1}", alpha=0.7)
+            ax.plot(xs.cpu().detach().numpy(), ys.cpu().detach().numpy(), 'b-',
+                    label=f"PAU{i+1}", alpha=0.7)
             # ax.set(xlabel='x', ylabel=f'PAU{i+1}(x)')
-            ax.legend(prop={'size': 13}, framealpha=0.5)
+            # ax.legend(prop={'size': 13}, framealpha=0.5)
             ax.tick_params("both")
             # ax.yaxis.set_major_locator(plt.MaxNLocator(2))
     else:
         act = acts[0]  # In shared_pau case, any act from acts is the same
-        bins, hist = plottable_bins(sum(input_dists), 0.001)
-        edge0 = bins.min()
-        edge1 = bins.max()
-        size = edge1 - edge0
-        rangin = (edge0 - size//2, edge1 + size//2)
-        xs = torch.linspace(*rangin, 1000, device='cuda')
+        inp_dist = act.show(display=False)
+        hist = inp_dist['hist']['freq']
+        bins = inp_dist['hist']['bins']
+        xs = inp_dist['line']['x']
+        padding = (xs[-1] - xs[0])/2
+        xs = torch.arange(xs[0] - padding, xs[-1] + padding,
+                          xs[1] - xs[0]).cuda()
         ys = act(xs)
         ax = plt.gca()
         ax.set_zorder(1)
@@ -142,13 +142,13 @@ def compare_acts(acts, input_dists, seed="", limit=1, axs=None, silu_comp=False)
         #     plt.plot(xs.cpu().detach().numpy(),
         #              y2.cpu().detach().numpy(), 'r--',
         #              label=f"adjusted dSiLU")
-        ax.plot(xs.cpu().detach().numpy(),
-                ys.cpu().detach().numpy(), 'b-', label=f"R.PAU", alpha=0.7)
+        ax.plot(xs.cpu().detach().numpy(), ys.cpu().detach().numpy(), 'b-',
+                label=f"R.PAU", alpha=0.7)
         ax2 = ax.twinx()
         ax2.set_yticks([])
-        ax2.bar(bins, hist/hist.max(), width=sum(input_dists).bin_sizes[0],
+        ax2.bar(bins, hist, width=bins[1] - bins[0],
                 color=edc, edgecolor=edc)
-        ax.legend(prop={'size': 13})
+        # ax.legend(prop={'size': 13})
         ax.tick_params("both", labelsize="large")
     return limit
 

@@ -18,9 +18,6 @@ from collections import namedtuple
 
 args = parser.parse_args()
 
-# exec(f'from configs.{args.game.lower()}_config import *')
-
-###
 with open(f'configs/{args.game.lower()}_config.json', 'r') as f:
     data = f'{json.load(f)}'.replace("'", '"')
     config = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -65,7 +62,6 @@ if not args.recover:
                               n=1000000)
 
     pi = EpsGreedy(epsilon=epsilon_random)
-    # import ipdb; ipdb.set_trace()
     # Approximator
     input_shape = (config.history_length, config.height, config.width)
     approximator_params = dict(
@@ -120,7 +116,6 @@ else:
 core = Core(agent, mdp)
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
-
 for epoch in range(init_epoch, config.n_epochs + 1):
     rtpt.epoch_starts()
     print_epoch(epoch)

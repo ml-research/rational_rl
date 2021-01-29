@@ -16,6 +16,8 @@ save_folder = f"scores/dqn_{args.game.lower()}"
 base_filename = f"_scores{args.game}Deterministic-v4_seed"
 act_funcs = ["paus", "rpau", "lrelu", "d+silu", "onlysilu", "DDQN"]
 act_funcs_complete_names = ["RN", "RRN", "Leaky ReLU", "SiLU+dSiLU", "SiLU", "DDQN"]
+act_funcs = ["paus", "rpau", "lrelu", "3sp1p"]
+act_funcs_complete_names = ["RN", "RRN", "Leaky ReLU", "Mixed"]
 # act_funcs = ["paus", "rpau", "lrelu", "DDQN"]
 # act_funcs_complete_names = ["RN", "RRN", "LReLU", "LReLU"]
 nb_seeds = 5
@@ -73,7 +75,7 @@ for act, act_name in zip(act_funcs, act_funcs_complete_names):
         continue
     plt.plot(mean, label=lab)
     # if args.game == "Asterix":
-    # plt.legend(fancybox=True, framealpha=0.5, fontsize=11.5)
+    plt.legend(fancybox=True, framealpha=0.5, fontsize=11.5)
     plt.fill_between(range(len(mean)), mean - standard_dev, mean + standard_dev,
                      alpha=0.5)
 

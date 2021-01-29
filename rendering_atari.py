@@ -22,8 +22,10 @@ def run_exp(agent, env, args):
     for i in range(3): # only 3 lives max
         total_r = 0
         state = env.reset()
+        import ipdb; ipdb.set_trace()
         n_steps = 0
         while True:
+            import ipdb; ipdb.set_trace()
             action = agent.draw_action(state)
             state, reward, done, _ = env.step(action)
             total_r += reward
@@ -52,8 +54,10 @@ if __name__ == '__main__':
     make_deterministic(0, env)
 
 
-    agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}.zip"
+    # agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}.zip"
     # agent_f = f"{args.algo}_{args.game}Deterministic-v4_seed{args.seed}_{args.act_f}_epoch_{args.epoch}"
-    agent = Agent.load(f"agent_save/{agent_f}")
+    agent_f = f"{args.algo}_{args.act_f}_{args.game}_s{args.seed}_e{args.epoch}.zip"
+    print(f"updated_agents/{agent_f}")
+    agent = Agent.load(f"updated_agents/{agent_f}")
 
     run_exp(agent, env, args)

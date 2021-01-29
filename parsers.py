@@ -3,8 +3,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-af", "--act", help="Activation function to use",
                     action="store", dest="act_f", required=True,
-                    choices=['paus', 'rpau', 'lrelu', 'relu', 'silu',
-                             'd+silu'])
+                    choices=['rat', 'recrat', 'lrelu', 'relu', 'silu',
+                             'd+silu', 'r3r1', 'r2r2', 'r1r3', 'r2rr'])
 parser.add_argument("-alg", "--algo", help="Activation function to use",
                     action="store", dest="algo", required=True,
                     choices=['DQN', 'DDQN'])
@@ -30,7 +30,7 @@ graph_parser.add_argument("--csv_score", help="Creates a file csv file of the re
 rendering_parser = argparse.ArgumentParser()
 rendering_parser.add_argument("-af", "--act", help="Activation function to use",
                               action="store", dest="act_f", required=True,
-                              choices=['paus', 'rpau', 'lrelu', 'relu',
+                              choices=['rat', 'recrat', 'lrelu', 'relu',
                                        'freezed_pau'])
 rendering_parser.add_argument("-alg", "--algo", help="Activation function to use",
                               action="store", dest="algo", required=True,
@@ -49,3 +49,23 @@ rendering_parser.add_argument("--video_title", help="Video title the video",
                               dest="video_title", default=None)
 rendering_parser.add_argument("-e", "--epoch", help="Epoch to use",
                               dest="epoch", default="500")
+
+
+eval_parser = argparse.ArgumentParser()
+eval_parser.add_argument("-af", "--act", help="Activation function to use",
+                         action="store", dest="act_f",
+                         choices=['rat', 'recrat', 'lrelu', 'relu', 'silu',
+                                  'd+silu'])
+eval_parser.add_argument("-alg", "--algo", help="Activation function to use",
+                         action="store", dest="algo",
+                         choices=['DQN', 'DDQN'])
+eval_parser.add_argument("-g", "--game", help="Game to train on", required=True,
+                         action="store", dest="game")
+eval_parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
+                         required=True, action="store", dest="seed", type=int)
+eval_parser.add_argument("--random", help="Evaluate random agent instead",
+                         action="store_true", dest="random")
+eval_parser.add_argument("--graph_save", help="Save the graph",
+                         action="store_true", dest="save")
+eval_parser.add_argument("-e", "--epoch", help="Epoch to use",
+                         dest="epoch", default="500")
