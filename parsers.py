@@ -28,19 +28,7 @@ graph_parser.add_argument("--csv_score", help="Creates a file csv file of the re
                           action="store_true", dest="csv")
 
 rendering_parser = argparse.ArgumentParser()
-rendering_parser.add_argument("-af", "--act", help="Activation function to use",
-                              action="store", dest="act_f", required=True,
-                              choices=['rat', 'recrat', 'lrelu', 'relu',
-                                       'freezed_pau'])
-rendering_parser.add_argument("-alg", "--algo", help="Activation function to use",
-                              action="store", dest="algo", required=True,
-                              choices=['DQN', 'DDQN'])
-rendering_parser.add_argument("-g", "--game", help="Game to train on", required=True,
-                              action="store", dest="game")
-rendering_parser.add_argument("-s", "--seed", help="Seed for pytorch + env", required=True,
-                              action="store", dest="seed", type=int)
-rendering_parser.add_argument("--freeze_pau", help="Freeze pau that is then non learnable",
-                              action="store_true", dest="freeze_pau", default=False)
+rendering_parser.add_argument('agent_path', help='path to agent to vizualize')
 rendering_parser.add_argument("-r", "--record", help="records the video",
                               action="store_true", dest="record", default=False)
 rendering_parser.add_argument("-nd", "--no_display", help="Avoid displaying",
@@ -49,7 +37,8 @@ rendering_parser.add_argument("--video_title", help="Video title the video",
                               dest="video_title", default=None)
 rendering_parser.add_argument("-e", "--epoch", help="Epoch to use",
                               dest="epoch", default="500")
-
+rendering_parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
+                              default=4, action="store", dest="seed", type=int)
 
 eval_parser = argparse.ArgumentParser()
 eval_parser.add_argument("-af", "--act", help="Activation function to use",

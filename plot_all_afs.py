@@ -46,10 +46,6 @@ for seed in [args.seed]:
     else:
         limit = compare_acts(acts[:1], input_dists, str(seed), limit, silu_comp=False)
 
-# plt.xlabel("x")
-# plt.ylabel("PAU(x)")
-# plt.suptitle(f"{args.act_f} on {args.game}")
-# plt.legend()
 plt.show()
 out_filename = f"{args.game}_{pau_type}_seed_{args.seed}.svg"
 fig.savefig(f"{save_folder + out_filename}", format='svg')

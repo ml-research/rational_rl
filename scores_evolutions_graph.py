@@ -8,8 +8,8 @@ import seaborn as sns
 sns.set_style("whitegrid")
 args = graph_parser.parse_args()
 
-# fig = plt.figure(figsize=(3.7, 2))
-fig = plt.figure(figsize=(6, 4))
+fig = plt.figure(figsize=(3.7, 2))
+# fig = plt.figure(figsize=(6, 4))
 
 
 save_folder = f"scores/dqn_{args.game.lower()}"

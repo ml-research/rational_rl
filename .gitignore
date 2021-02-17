@@ -1,1 +1,5 @@
 __pycache__
+videos/*.mp4
+videos/*.meta.json
+updated_agents/*.zip
+videos/gifs_files/^((?!optim).)*$

@@ -217,86 +217,10 @@ class RTPT():
         setproctitle(complete_title)
 
 
-# def update_network(old_rational_net):
-#     """
-#     Will create a new rational_net from an old one.
-#     """
-#
-#     new_net = model_cls(**kwargs)
-#     import ipdb; ipdb.set_trace()
-#     new_net.load_state_dict(copy.deepcopy(old_rational_net.state_dict()))
-#     new_func1 = Rational()
-#     new_func2 = Rational()
-#     new_func3 = Rational()
-#     new_func4 = Rational()
-#     rational_net._h1.bias.requires_grad_(False)
-#     rational_net._h2.bias.requires_grad_(False)
-#     rational_net._h3.bias.requires_grad_(False)
-#     rational_net._h4.bias.requires_grad_(False)
-#     rational_net._h1.bias += rational_net.act_func1.center.item()
-#     rational_net._h2.bias += rational_net.act_func2.center.item()
-#     rational_net._h3.bias += rational_net.act_func3.center.item()
-#     rational_net._h4.bias += rational_net.act_func4.center.item()
-#     new_func1._from_old(rational_net.act_func1)
-#     new_func2._from_old(rational_net.act_func2)
-#     new_func3._from_old(rational_net.act_func3)
-#     new_func4._from_old(rational_net.act_func4)
-#     rational_net._h1.bias.requires_grad_(True)
-#     rational_net._h2.bias.requires_grad_(True)
-#     rational_net._h3.bias.requires_grad_(True)
-#     rational_net._h4.bias.requires_grad_(True)
-#     rational_net.act_func1 = new_func1
-#     rational_net.act_func2 = new_func2
-#     rational_net.act_func3 = new_func3
-#     rational_net.act_func4 = new_func4
-#
-#     if not old_value == rational_net(inp).sum():
-#         print("old value different from new one")
-#         print(old_value)
-#         print(rational_net(inp).sum())
-#     rational_net.act_func1.input_retrieve_mode()
-#     rational_net.act_func2.input_retrieve_mode()
-#     rational_net.act_func3.input_retrieve_mode()
-#     rational_net.act_func4.input_retrieve_mode()
-
-# def update_pau_network(old_pau_net):
-#     """
-#     Will create a new rational_net from an old one.
-#     """
-#
-#     new_net = model_cls(**kwargs)
-#     import ipdb; ipdb.set_trace()
-#     new_net.load_state_dict(copy.deepcopy(old_rational_net.state_dict()))
-#     new_func1 = Rational()
-#     new_func2 = Rational()
-#     new_func3 = Rational()
-#     new_func4 = Rational()
-#     rational_net._h1.bias.requires_grad_(False)
-#     rational_net._h2.bias.requires_grad_(False)
-#     rational_net._h3.bias.requires_grad_(False)
-#     rational_net._h4.bias.requires_grad_(False)
-#     rational_net._h1.bias += rational_net.act_func1.center.item()
-#     rational_net._h2.bias += rational_net.act_func2.center.item()
-#     rational_net._h3.bias += rational_net.act_func3.center.item()
-#     rational_net._h4.bias += rational_net.act_func4.center.item()
-#     new_func1._from_old(rational_net.act_func1)
-#     new_func2._from_old(rational_net.act_func2)
-#     new_func3._from_old(rational_net.act_func3)
-#     new_func4._from_old(rational_net.act_func4)
-#     rational_net._h1.bias.requires_grad_(True)
-#     rational_net._h2.bias.requires_grad_(True)
-#     rational_net._h3.bias.requires_grad_(True)
-#     rational_net._h4.bias.requires_grad_(True)
-#     rational_net.act_func1 = new_func1
-#     rational_net.act_func2 = new_func2
-#     rational_net.act_func3 = new_func3
-#     rational_net.act_func4 = new_func4
-#
-#     if not old_value == rational_net(inp).sum():
-#         print("old value different from new one")
-#         print(old_value)
-#         print(rational_net(inp).sum())
-#     rational_net.act_func1.input_retrieve_mode()
-#     rational_net.act_func2.input_retrieve_mode()
-#     rational_net.act_func3.input_retrieve_mode()
-#     rational_net.act_func4.input_retrieve_mode()
+def extract_game_name(path): # DQN_lrelu_SpaceInvaders_s1_e500.zip
+    for filename in listdir("configs"):
+        pgn = filename.split("_")[0]
+        if pgn in path.lower():
+            return pgn
+    print("Couldn't find a corresponding game name, check the configs folder")
+    exit(1)
