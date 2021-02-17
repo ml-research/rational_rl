@@ -31,14 +31,19 @@ To watch a trained Recurrent Rational agent on Kangaroo, please provide its path
 `python3 rendering_atari.py updated_agents/DQN_recrat_Kangaroo_s0_e500.zip`
 Hereafter are provided some compiled example of DQN Agents (*left* with Leaky ReLU, *center* with Rational and *right* with Recurrent Rationals)
 * Enduro
-  ![enduro gif](./videos/gifs_files/optim/Enduro-optim.gif)
-* Enduro
-  ![enduro gif](./videos/gifs_files/optim/Enduro-optim.gif)
-* Enduro
-  ![enduro gif](./videos/gifs_files/optim/Enduro-optim.gif)
-* Enduro
-  ![enduro gif](./videos/gifs_files/optim/Enduro-optim.gif)
-you can find those gifs in `videos/gifs_files/optim/Asterix`
+  ![Enduro gif](./videos/gifs_files/Enduro-optim.gif)
+* Kangaroo
+  ![Kangaroo gif](./videos/gifs_files/Kangaroo-optim.gif)
+* SpaceInvaders
+  ![SpaceInvaders gif](./videos/gifs_files/SpaceInvaders-optim.gif)
+* Tennis
+  ![Tennis gif](./videos/gifs_files/Tennis-optim.gif) *Agent is orange
+* TimePilot
+  ![TimePilot gif](./videos/gifs_files/TimePilot-optim.gif)
+* Tutankham
+  ![Tutankham gif](./videos/gifs_files/Tutankham-optim.gif)
+
+you can find more gifs in `videos/gifs_files/optim/Asterix`
 ## Usage
 * To train a DQN agent on Space Invaders, with recurrent rational and seed set to 0: <br/>
 `python3 train.py -g SpaceInvaders -alg DQN -af rpau -s 0`
@@ -54,4 +59,4 @@ Creating the following image: <br/>
 * To get the bar plot comparing rational agents and original [Leaky ReLU] agent.
 `python3 bar_plot_human_compare.py -h`
 
-To get the trained agents, please contact [Quentin Delfosse](quentin.delfosse@cs.tu-darmstadt.de)
+To get the trained agents, please contact [Quentin Delfosse](mailto:quentin.delfosse@cs.tu-darmstadt.de)
