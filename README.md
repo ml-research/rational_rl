@@ -30,17 +30,17 @@ This last command will instantiate a container from your image and run bash into
 To watch a trained Recurrent Rational agent on Kangaroo, please provide its path: <br/>
 `python3 rendering_atari.py updated_agents/DQN_recrat_Kangaroo_s0_e500.zip`
 Hereafter are provided some compiled example of DQN Agents (*left* with Leaky ReLU, *center* with Rational and *right* with Recurrent Rationals)
-* Enduro
+* ### Enduro :oncoming_automobile:
   ![Enduro gif](./videos/gifs_files/Enduro-optim.gif)
-* Kangaroo
+* ### Kangaroo :cyclone:
   ![Kangaroo gif](./videos/gifs_files/Kangaroo-optim.gif)
-* SpaceInvaders
+* ### SpaceInvaders :space_invader:
   ![SpaceInvaders gif](./videos/gifs_files/SpaceInvaders-optim.gif)
-* Tennis
+* ### Tennis :tennis:
   ![Tennis gif](./videos/gifs_files/Tennis-optim.gif) *Agent is orange
-* TimePilot
+* ### TimePilot :airplane:
   ![TimePilot gif](./videos/gifs_files/TimePilot-optim.gif)
-* Tutankham
+* ### Tutankham :ring:
   ![Tutankham gif](./videos/gifs_files/Tutankham-optim.gif)
 
 you can find more gifs in `videos/gifs_files/optim/Asterix`
