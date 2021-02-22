@@ -1,6 +1,7 @@
 # Rational Reinforcement Learning Repository
 
 Using Rational Networks in Simple Reinforcement Learning (Atati task so far).
+This repository is used in the [Recurrent Rational Networks](https://arxiv.org/pdf/2102.09407.pdf) publication.
 
 ![rl scores](./images/rl_scores.png)
 
