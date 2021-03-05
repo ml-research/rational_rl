@@ -1,13 +1,15 @@
 import pickle
 import torch.optim as optim
 import torch.nn.functional as F
-from mushroom_rl.algorithms.value import DQN, DoubleDQN
+from mushroom_rl.algorithms.value import DQN, DoubleDQN, CategoricalDQN
+from mushroom_rl.algorithms.value import DuelingDQN
 from mushroom_rl.approximators.parametric import TorchApproximator
 from mushroom_rl.core import Core
 from mushroom_rl.environments import Atari
 from mushroom_rl.policy import EpsGreedy
 from mushroom_rl.utils.parameters import LinearParameter, Parameter
-from networks import Network, USE_CUDA
+from mushroom_rl.utils.replay_memory import PrioritizedReplayMemory as PriorityReplay
+from networks import GeneralNetwork, USE_CUDA
 from utils import get_stats, recover, sepprint, print_epoch, \
                   make_deterministic, checkpoint, \
                   RTPT, load_activation_function
@@ -64,27 +66,45 @@ if not args.recover:
     pi = EpsGreedy(epsilon=epsilon_random)
     # Approximator
     input_shape = (config.history_length, config.height, config.width)
+
+    #set isFeatureNetwork to true if we have DuelingDQN or DistribDQN, because those need a different Network
+    isFeatureNetwork = False
+    if args.algo == "DistribDQN" or args.algo == "DuelingDQN":
+        isFeatureNetwork = True
+
     approximator_params = dict(
-        network=Network,
+        network=GeneralNetwork,
         input_shape=input_shape,
         output_shape=(mdp.info.action_space.n,),
         n_actions=mdp.info.action_space.n,
-        n_features=Network.n_features,
+        n_features=GeneralNetwork.n_features,
         optimizer=optimizer,
         loss=F.smooth_l1_loss,
         use_cuda=USE_CUDA,
+        #isFeatureNetwork=isFeatureNetwork,
         activation_function=args.act_f,
         freeze_pau = args.freeze_pau,
         loaded_act_f = loaded_af
     )
 
     approximator = TorchApproximator
+    
+
+    #check whether we use prioritized replay or not 
+    wantPrioritized = args.prio
+    if wantPrioritized:
+        #parameters chosen like in rainbow paper
+        #n maybe needs to be tweaked
+        beta = LinearParameter(0.4, 1.0, n=1000000)
+        replay_memory = PriorityReplay(config.initial_replay_size, config.max_replay_size, 0.5, beta)
+    else: 
+        replay_memory = None
 
     # Agent
     algorithm_params = dict(
         batch_size=32,
         target_update_frequency=config.target_update_frequency // config.train_frequency,
-        replay_memory=None,
+        replay_memory=replay_memory,
         initial_replay_size=config.initial_replay_size,
         max_replay_size=config.max_replay_size
     )
@@ -99,6 +119,10 @@ if not args.recover:
         agent = DoubleDQN(mdp.info, pi, approximator,
                           approximator_params=approximator_params,
                           **algorithm_params)
+    elif args.algo == "DistribDQN":
+        agent = CategoricalDQN(mdp.info, pi, approximator_params=approximator_params, n_atoms=51, v_min=-10, v_max=10, **algorithm_params)
+    elif args.algo == "DuelingDQN":
+        agent = DuelingDQN(mdp.info, pi, approximator_params=approximator_params, **algorithm_params)
 
     model = agent.approximator.model.network
 
