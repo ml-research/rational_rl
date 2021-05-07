@@ -8,8 +8,8 @@ import re
 import pickle
 import datetime
 from setproctitle import setproctitle
-from gym.envs.classic_control import rendering
 try:
+    from gym.envs.classic_control import rendering
     from gym.wrappers.monitoring.video_recorder import VideoRecorder
 except:
     print("Couldn't import rendering")
