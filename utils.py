@@ -8,15 +8,17 @@ import re
 import pickle
 import datetime
 from setproctitle import setproctitle
+from gym.envs.classic_control import rendering
 try:
-    from gym.envs.classic_control import rendering
     from gym.wrappers.monitoring.video_recorder import VideoRecorder
 except:
-    pass
+    print("Couldn't import rendering")
 from torch.autograd import Variable
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import copy
+import cv2
+from pytorch_grad_cam.utils.image import show_cam_on_image
 
 
 def make_deterministic(seed, mdp, states_dict=None):
@@ -170,14 +172,20 @@ class GymRenderer():
 
         return np.repeat(np.repeat(rgb_array, k, axis=0), l, axis=1)
 
-    def render(self, mode="zoomed"):
-        if self.record:
-            # self.env.render()
-            self.video_rec.capture_frame()
+    def render(self, mode="zoomed", grayscale_cam=None):
+        if mode == "heatmap":
+            rgb = self.env.render('rgb_array')
+            frame =  cv2.resize(rgb, (84, 84),
+                                interpolation=cv2.INTER_LINEAR) / 255
+            heated_img = show_cam_on_image(frame, grayscale_cam[0])
+            return heated_img
         elif mode == "zoomed":
             rgb = self.env.render('rgb_array')
             upscaled = self.repeat_upsample(rgb, 4, 4)
             self.viewer.imshow(upscaled)
+        elif self.record:
+            # self.env.render()
+            self.video_rec.capture_frame()
         else:
             self.env.render()
 

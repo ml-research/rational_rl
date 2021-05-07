@@ -115,6 +115,16 @@ else:
 
 core = Core(agent, mdp)
 
+# import ipdb; ipdb.set_trace()
+import torch; torch.set_printoptions(precision=15)
+rat1 = agent.approximator.model.network.act_func1
+print(rat1.numerator)
+def printgradnorm(self, grad_input, grad_output):
+    print('Inside ' + self.__class__.__name__ + ' backward')
+    print('Inside class:' + self.__class__.__name__)
+    import ipdb; ipdb.set_trace()
+rat1.register_backward_hook(printgradnorm)
+
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
 for epoch in range(init_epoch, config.n_epochs + 1):
     rtpt.epoch_starts()
@@ -137,6 +147,8 @@ for epoch in range(init_epoch, config.n_epochs + 1):
         print("Saving the agent")
         with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
             pickle.dump(scores, f)
+    print(rat1.numerator)
+    exit()
     rtpt.setproctitle()
 
 

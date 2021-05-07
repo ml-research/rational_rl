@@ -38,7 +38,7 @@ rendering_parser.add_argument("--video_title", help="Video title the video",
 rendering_parser.add_argument("-e", "--epoch", help="Epoch to use",
                               dest="epoch", default="500")
 rendering_parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
-                              default=4, action="store", dest="seed", type=int)
+                              default=0, action="store", dest="seed", type=int)
 
 eval_parser = argparse.ArgumentParser()
 eval_parser.add_argument("-af", "--act", help="Activation function to use",
@@ -58,3 +58,14 @@ eval_parser.add_argument("--graph_save", help="Save the graph",
                          action="store_true", dest="save")
 eval_parser.add_argument("-e", "--epoch", help="Epoch to use",
                          dest="epoch", default="500")
+
+gradcam_parser = argparse.ArgumentParser()
+gradcam_parser.add_argument('game_name', help='Name of the game')
+gradcam_parser.add_argument("-r", "--record", help="records the video",
+                            action="store_true", dest="record", default=False)
+gradcam_parser.add_argument("-a", "--agent", help="agent to use", default="all",
+                            choices=["all", "lrelu", "recrat", "rat"])
+gradcam_parser.add_argument("--title", help="Video title the video",
+                            dest="title", default=None)
+gradcam_parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
+                            default=0, action="store", dest="seed", type=int)

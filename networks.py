@@ -198,6 +198,11 @@ class Network(nn.Module):
         self.act_func3.activation_function = self.old_act3
         self.act_func4.activation_function = self.old_act4
 
+
+class GeneralNetwork(Network):
+    pass
+
+
 if __name__ == '__main__':
     model = Network([10], [10], "recrat")
     model.to(torch.device("cuda:0"))
