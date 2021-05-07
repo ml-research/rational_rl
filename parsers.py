@@ -7,7 +7,7 @@ parser.add_argument("-af", "--act", help="Activation function to use",
                              'd+silu', 'r3r', 'r2r2', 'rr3', 'r2rr'])
 parser.add_argument("-alg", "--algo", help="Activation function to use",
                     action="store", dest="algo", required=True,
-                    choices=['DQN', 'DDQN'])
+                    choices=['DQN', 'DDQN', 'DistribDQN', 'DuelingDQN'])
 parser.add_argument("-g", "--game", help="Game to train on", required=True,
                     action="store", dest="game")
 parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
@@ -18,6 +18,8 @@ parser.add_argument("--recover", help="Recover from the last trained agent",
                     action="store_true", dest="recover", default=False)
 parser.add_argument("--load", help="Load a pretrained AF from a folder",
                     action="store_true", dest="load", default=False)
+parser.add_argument("-prio", help="Whether to use Prioritized Replay used in the DeepMind Paper", dest="prio", action="store_true",
+                    required=False, default=None)
 
 graph_parser = argparse.ArgumentParser()
 graph_parser.add_argument("-g", "--game", help="Game to train on",
