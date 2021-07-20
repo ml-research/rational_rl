@@ -8,13 +8,16 @@ from collections import namedtuple
 import json
 import torch
 from pytorch_grad_cam import GradCAM, ScoreCAM, GradCAMPlusPlus, AblationCAM, XGradCAM, EigenCAM
-from pytorch_grad_cam.utils.image import show_cam_on_image
 import numpy as np
 import glob
 import matplotlib.pyplot as plt
 
 
 all_agents = ["lrelu", "rat", "recrat"]
+
+
+CAMS = {"Grad": GradCAM, "Score": ScoreCAM, "GradCPP": GradCAMPlusPlus,
+         "Ablation": AblationCAM, "XGrad": XGradCAM, "Eigen": EigenCAM}
 
 
 def load_agents(game_name, agents_types):
@@ -24,14 +27,9 @@ def load_agents(game_name, agents_types):
             for agt in agents_types:
                 if agt in path.lower() and agt not in agents.keys():
                     agents[agt] = Agent.load(path)
-                    break
     return agents
 
-
 def run_exp(agents, env, args):
-    if args.record and args.video_title is None:
-        args.video_title = args.agent_path.split("/")[-1].replace(".zip", "")
-    renderer = GymRenderer(env, record=args.record, title=args.title)
     epsilon_test = Parameter(value=0.05)
     nets = {}
     cams = {}
@@ -44,8 +42,12 @@ def run_exp(agents, env, args):
         agent.policy.set_epsilon(epsilon_test)
         net = agent.approximator.model.network
         nets[agt] = net
-        cams[agt] = GradCAM(model=net, target_layer=net._h1, use_cuda=True)
-
+        Selected_CAM = CAMS[args.method]
+        cams[agt] = Selected_CAM(model=net, target_layer=net._h1,
+                                 use_cuda=True)
+        if args.record and args.title is None:
+            args.title = f"heatmap_{args.game_name}_{agt}"
+    renderer = GymRenderer(env, record=args.record, title=args.title)
     for i in range(1): # only 1 life
         total_r = 0
         state = env.reset()
@@ -60,10 +62,17 @@ def run_exp(agents, env, args):
                 action = main_agent.draw_action(state)
             # action = np.array([env.env.action_space.sample()])
             state, reward, done, _ = env.step(action)
-            if n_steps % 10 == 0:
-                input_tensor = torch.cat([torch.tensor(state._frames[0]).unsqueeze(0) for i in range(4)]).unsqueeze(0).cuda()
-                fig, axes = plt.subplots(1, 3)
+            if n_steps % 4 == 0:
+            # if True:
+                frames = [torch.tensor(state._frames[0]).unsqueeze(0)
+                          for i in range(4)]
+                input_tensor = torch.cat(frames).unsqueeze(0).cuda()
+                if len(agents) > 1:
+                    fig, axes = plt.subplots(1, len(agents))
+                else:
+                    axes = [plt.gca()]
                 for i, (agt, cam) in enumerate(cams.items()):
+                    # import ipdb; ipdb.set_trace()
                     grayscale_cam = cam(input_tensor=input_tensor,
                                         target_category=None) # the highest
                     heated_img = renderer.render("heatmap", grayscale_cam)
@@ -72,7 +81,8 @@ def run_exp(agents, env, args):
                     ax.set_title(agt)
                     ax.get_xaxis().set_visible(False)
                     ax.get_yaxis().set_visible(False)
-                plt.show()
+                if not args.record:
+                    plt.show()
             total_r += reward
             n_steps += 1
             # if renderer is not None:
@@ -96,8 +106,7 @@ if __name__ == '__main__':
     env = Atari(config.game_name, config.width, config.height, ends_at_life=True,
                 history_length=config.history_length, max_no_op_actions=30)
     make_deterministic(args.seed, env)
-    if args.agent == "all":
-        args.agent = all_agents
+    args.agent = all_agents if args.agent == "all" else [args.agent]
     agents = load_agents(args.game_name, args.agent)
 
     run_exp(agents, env, args)

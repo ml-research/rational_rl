@@ -154,6 +154,8 @@ class GymRenderer():
         self.viewer = rendering.SimpleImageViewer()
         self.env = env
         self.record = record
+        self.img_list = []
+        self.title = title
         if record:
             self.video_rec = VideoRecorder(env.env, path=f"videos/{title}.mp4")
 
@@ -178,11 +180,15 @@ class GymRenderer():
             frame =  cv2.resize(rgb, (84, 84),
                                 interpolation=cv2.INTER_LINEAR) / 255
             heated_img = show_cam_on_image(frame, grayscale_cam[0])
+            if self.record:
+                self.img_list.append(self.repeat_upsample(heated_img))
             return heated_img
         elif mode == "zoomed":
             rgb = self.env.render('rgb_array')
             upscaled = self.repeat_upsample(rgb, 4, 4)
             self.viewer.imshow(upscaled)
+        elif mode == "return":
+            return self.env.render('rgb_array')
         elif self.record:
             # self.env.render()
             self.video_rec.capture_frame()
@@ -190,6 +196,9 @@ class GymRenderer():
             self.env.render()
 
     def close_recorder(self):
+        if len(self.img_list) > 0:
+            import imageio
+            imageio.mimsave(f'heated_annimation/{self.title}.gif', self.img_list)
         if self.record:
             self.video_rec.close()
             self.video_rec.enabled = False

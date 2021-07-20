@@ -1,5 +1,7 @@
 import argparse
 
+from mushroom_rl.algorithms.value.dqn.rainbow import Rainbow
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-af", "--act", help="Activation function to use",
                     action="store", dest="act_f", required=True,
@@ -7,7 +9,7 @@ parser.add_argument("-af", "--act", help="Activation function to use",
                              'd+silu', 'r3r', 'r2r2', 'rr3', 'r2rr'])
 parser.add_argument("-alg", "--algo", help="Activation function to use",
                     action="store", dest="algo", required=True,
-                    choices=['DQN', 'DDQN', 'DistribDQN', 'DuelingDQN'])
+                    choices=['DQN', 'DDQN', 'DistribDQN', 'DuelingDQN', 'Rainbow'])
 parser.add_argument("-g", "--game", help="Game to train on", required=True,
                     action="store", dest="game")
 parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
@@ -71,3 +73,7 @@ gradcam_parser.add_argument("--title", help="Video title the video",
                             dest="title", default=None)
 gradcam_parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
                             default=0, action="store", dest="seed", type=int)
+gradcam_parser.add_argument("-m", "--method", help="GradCAM method to use",
+                            choices=["Grad", "Score", "GradCPP",
+                                     "Ablation", "XGrad", "Eigen"],
+                            default="Score", action="store")

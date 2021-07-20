@@ -1,15 +1,14 @@
 import pickle
 import torch.optim as optim
 import torch.nn.functional as F
-from mushroom_rl.algorithms.value import DQN, DoubleDQN, CategoricalDQN
-from mushroom_rl.algorithms.value import DuelingDQN
+from mushroom_rl.algorithms.value import DQN, DoubleDQN, CategoricalDQN, Rainbow, DuelingDQN
 from mushroom_rl.approximators.parametric import TorchApproximator
 from mushroom_rl.core import Core
 from mushroom_rl.environments import Atari
 from mushroom_rl.policy import EpsGreedy
 from mushroom_rl.utils.parameters import LinearParameter, Parameter
 from mushroom_rl.utils.replay_memory import PrioritizedReplayMemory as PriorityReplay
-from networks import GeneralNetwork, USE_CUDA
+from networks import Network, USE_CUDA
 from utils import get_stats, recover, sepprint, print_epoch, \
                   make_deterministic, checkpoint, \
                   RTPT, load_activation_function
@@ -73,11 +72,11 @@ if not args.recover:
         isFeatureNetwork = True
 
     approximator_params = dict(
-        network=GeneralNetwork,
+        network=Network,
         input_shape=input_shape,
         output_shape=(mdp.info.action_space.n,),
         n_actions=mdp.info.action_space.n,
-        n_features=GeneralNetwork.n_features,
+        n_features=Network.n_features,
         optimizer=optimizer,
         loss=F.smooth_l1_loss,
         use_cuda=USE_CUDA,
@@ -88,16 +87,16 @@ if not args.recover:
     )
 
     approximator = TorchApproximator
-    
 
-    #check whether we use prioritized replay or not 
-    wantPrioritized = args.prio
+
+    #check whether we use prioritized replay or not
+    wantPrioritized = args.prio or args.algo == "Rainbow"
     if wantPrioritized:
         #parameters chosen like in rainbow paper
         #n maybe needs to be tweaked
         beta = LinearParameter(0.4, 1.0, n=1000000)
         replay_memory = PriorityReplay(config.initial_replay_size, config.max_replay_size, 0.5, beta)
-    else: 
+    else:
         replay_memory = None
 
     # Agent
@@ -119,6 +118,12 @@ if not args.recover:
         agent = DoubleDQN(mdp.info, pi, approximator,
                           approximator_params=approximator_params,
                           **algorithm_params)
+    elif args.algo == "Rainbow":
+        algorithm_params["initial_replay_size"] = 80000
+        algorithm_params["beta"] = beta
+        algorithm_params["n_steps_return"] = 3
+        algorithm_params["alpha_coeff"] = 0.5
+        agent = Rainbow(mdp.info, pi, approximator_params=approximator_params, n_atoms=51, v_min=-10, v_max=10, **algorithm_params)
     elif args.algo == "DistribDQN":
         agent = CategoricalDQN(mdp.info, pi, approximator_params=approximator_params, n_atoms=51, v_min=-10, v_max=10, **algorithm_params)
     elif args.algo == "DuelingDQN":
@@ -139,15 +144,15 @@ else:
 
 core = Core(agent, mdp)
 
-# import ipdb; ipdb.set_trace()
-import torch; torch.set_printoptions(precision=15)
-rat1 = agent.approximator.model.network.act_func1
-print(rat1.numerator)
-def printgradnorm(self, grad_input, grad_output):
-    print('Inside ' + self.__class__.__name__ + ' backward')
-    print('Inside class:' + self.__class__.__name__)
-    import ipdb; ipdb.set_trace()
-rat1.register_backward_hook(printgradnorm)
+# # import ipdb; ipdb.set_trace()
+# import torch; torch.set_printoptions(precision=15)
+# rat1 = agent.approximator.model.network.act_func1
+# print(rat1.numerator)
+# def printgradnorm(self, grad_input, grad_output):
+#     print('Inside ' + self.__class__.__name__ + ' backward')
+#     print('Inside class:' + self.__class__.__name__)
+#
+# rat1.register_backward_hook(printgradnorm)
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
 for epoch in range(init_epoch, config.n_epochs + 1):
@@ -171,8 +176,6 @@ for epoch in range(init_epoch, config.n_epochs + 1):
         print("Saving the agent")
         with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
             pickle.dump(scores, f)
-    print(rat1.numerator)
-    exit()
     rtpt.setproctitle()
 
 

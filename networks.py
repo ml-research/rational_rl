@@ -1,5 +1,3 @@
-
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -14,29 +12,21 @@ else:
     sepprint("\nNot using CUDA\n")
 
 
-#network with possibility to use as FeatureNetwork
-#Featue Network, modified version of:
-#https://github.com/MushroomRL/mushroom-rl/blob/dev/examples/atari_dqn.py
-class GeneralNetwork(nn.Module):
+class Network(nn.Module):
     n_features = 512
 
     def __init__(self, input_shape, output_shape, activation_function,
-                freeze_pau=False, loaded_act_f=None, isFeatureNetwork=False, **kwargs):
+                 freeze_pau=False, loaded_act_f=None, **kwargs):
         super().__init__()
-        
 
         n_input = input_shape[0]
         n_output = output_shape[0]
-
-        self.isFeatureNetwork = isFeatureNetwork
 
         self._h1 = nn.Conv2d(n_input, 32, kernel_size=8, stride=4)
         self._h2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
         self._h3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
         self._h4 = nn.Linear(3136, self.n_features)
-
-        if not isFeatureNetwork:
-            self._h5 = nn.Linear(self.n_features, n_output)
+        self._h5 = nn.Linear(self.n_features, n_output)
 
         nn.init.xavier_uniform_(self._h1.weight,
                                 gain=nn.init.calculate_gain('relu'))
@@ -46,10 +36,8 @@ class GeneralNetwork(nn.Module):
                                 gain=nn.init.calculate_gain('relu'))
         nn.init.xavier_uniform_(self._h4.weight,
                                 gain=nn.init.calculate_gain('relu'))
-
-        if not isFeatureNetwork:
-            nn.init.xavier_uniform_(self._h5.weight,
-                                    gain=nn.init.calculate_gain('linear'))
+        nn.init.xavier_uniform_(self._h5.weight,
+                                gain=nn.init.calculate_gain('linear'))
 
         if activation_function == "recrat":
             if loaded_act_f is not None:
@@ -120,17 +108,13 @@ class GeneralNetwork(nn.Module):
         h = self.act_func3(x3)
         x4 = self._h4(h.view(-1, 3136))
         h = self.act_func4(x4)
-
-        if not self.isFeatureNetwork:
-            q = self._h5(h)
-            if action is None:
-                return q
-            else:
-                q_acted = torch.squeeze(q.gather(1, action.long()))
-
-                return q_acted
+        q = self._h5(h)
+        if action is None:
+            return q
         else:
-            return h
+            q_acted = torch.squeeze(q.gather(1, action.long()))
+
+            return q_acted
 
     def hasrecurrentrational(self):
         return type(self.act_func1) == Rational and \
@@ -212,11 +196,6 @@ class GeneralNetwork(nn.Module):
         self.act_func3.activation_function = self.old_act3
         self.act_func4.activation_function = self.old_act4
 
-
-# class GeneralNetwork(Network):
-#     pass
-
-
 if __name__ == '__main__':
-    model = GeneralNetwork([10], [10], "recrat")
+    model = Network([10], [10], "recrat")
     model.to(torch.device("cuda:0"))
