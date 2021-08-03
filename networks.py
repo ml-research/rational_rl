@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from rational.torch import Rational
+from rational.torch import Rational, EmbeddedRational
 from utils import sepprint
 from activation_functions import SiLU, dSiLU
 
@@ -50,6 +50,12 @@ class Network(nn.Module):
                 self.act_func2 = self.act_func1
                 self.act_func3 = self.act_func1
                 self.act_func4 = self.act_func1
+        elif activation_function == "embrat":
+            deg = (5, 4)
+            self.act_func1 = EmbeddedRational(cuda=USE_CUDA, degrees=deg).requires_grad_(False)
+            self.act_func2 = EmbeddedRational(cuda=USE_CUDA, degrees=deg).requires_grad_(False)
+            self.act_func3 = EmbeddedRational(cuda=USE_CUDA, degrees=deg).requires_grad_(False)
+            self.act_func4 = EmbeddedRational(cuda=USE_CUDA, degrees=deg).requires_grad_(False)
         elif activation_function == "rat":
             if loaded_act_f is not None:
                 self.act_func1 = loaded_act_f[0]
@@ -196,6 +202,6 @@ class Network(nn.Module):
         self.act_func3.activation_function = self.old_act3
         self.act_func4.activation_function = self.old_act4
 
-if __name__ == '__main__':
-    model = Network([10], [10], "recrat")
-    model.to(torch.device("cuda:0"))
+# if __name__ == '__main__':
+#     model = Network([10], [10], "recrat")
+#     model.to(torch.device("cuda:0"))

@@ -18,7 +18,12 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 import copy
 import cv2
-from pytorch_grad_cam.utils.image import show_cam_on_image
+try:
+    from pytorch_grad_cam.utils.image import show_cam_on_image
+except Exception as e:
+    print("Could not import pytorch_grad_cam")
+    pass
+
 
 
 def make_deterministic(seed, mdp, states_dict=None):

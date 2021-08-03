@@ -1,11 +1,9 @@
 import argparse
 
-from mushroom_rl.algorithms.value.dqn.rainbow import Rainbow
-
 parser = argparse.ArgumentParser()
 parser.add_argument("-af", "--act", help="Activation function to use",
                     action="store", dest="act_f", required=True,
-                    choices=['rat', 'recrat', 'lrelu', 'relu', 'silu',
+                    choices=['rat', 'embrat', 'recrat', 'lrelu', 'relu', 'silu',
                              'd+silu', 'r3r', 'r2r2', 'rr3', 'r2rr'])
 parser.add_argument("-alg", "--algo", help="Activation function to use",
                     action="store", dest="algo", required=True,

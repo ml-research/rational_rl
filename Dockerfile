@@ -1,5 +1,5 @@
 FROM nvidia/cuda:10.2-devel
-ARG	folder_name=rl_paus
+ARG	folder_name=rational_rl
 RUN 	apt-get update -y && apt-get install -y python3-pyqt5 python3-pip
 RUN	mkdir /home/$folder_name
 

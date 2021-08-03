@@ -1,7 +1,8 @@
+from torch.utils.tensorboard import SummaryWriter
 import pickle
 import torch.optim as optim
 import torch.nn.functional as F
-from mushroom_rl.algorithms.value import DQN, DoubleDQN, CategoricalDQN, Rainbow, DuelingDQN
+from mushroom_rl.algorithms.value import DQN, DoubleDQN, CategoricalDQN, DuelingDQN#, Rainbow
 from mushroom_rl.approximators.parametric import TorchApproximator
 from mushroom_rl.core import Core
 from mushroom_rl.environments import Atari
@@ -15,9 +16,15 @@ from utils import get_stats, recover, sepprint, print_epoch, \
 from parsers import parser
 import json
 from collections import namedtuple
+from datetime import datetime
 
 
 args = parser.parse_args()
+
+run_dir = f"{args.game.capitalize()}/{args.algo}_{args.act_f}_{args.seed}"
+nowdt = str(datetime.now()).split('.')[0]
+run_dir += f"_{nowdt}"
+writer = SummaryWriter(log_dir=f"logs/{run_dir}")
 
 with open(f'configs/{args.game.lower()}_config.json', 'r') as f:
     data = f'{json.load(f)}'.replace("'", '"')
@@ -155,7 +162,8 @@ core = Core(agent, mdp)
 # rat1.register_backward_hook(printgradnorm)
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
-for epoch in range(init_epoch, config.n_epochs + 1):
+# for epoch in range(init_epoch, config.n_epochs + 1):
+for epoch in range(init_epoch, 20 + 1):
     rtpt.epoch_starts()
     print_epoch(epoch)
     print('- Learning:')
@@ -169,7 +177,11 @@ for epoch in range(init_epoch, config.n_epochs + 1):
     pi.set_epsilon(epsilon_test)
     mdp.set_episode_end(False)
     dataset = core.evaluate(n_steps=config.test_samples)
-    scores.append(get_stats(dataset))
+    score = get_stats(dataset)
+    scores.append(score)
+    writer.add_scalar('Min Reward', score[0], epoch)
+    writer.add_scalar('Max Reward', score[1], epoch)
+    writer.add_scalar('Mean Reward', score[2], epoch)
     if epoch % 50 == 0:
         pi.set_epsilon(epsilon)
         checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
