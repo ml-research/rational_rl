@@ -24,7 +24,7 @@ args = parser.parse_args()
 run_dir = f"{args.game.capitalize()}/{args.algo}_{args.act_f}_{args.seed}"
 nowdt = str(datetime.now()).split('.')[0]
 run_dir += f"_{nowdt}"
-writer = SummaryWriter(log_dir=f"logs/{run_dir}")
+writer = SummaryWriter(log_dir=f"logs/{run_dir}_5_4")
 
 with open(f'configs/{args.game.lower()}_config.json', 'r') as f:
     data = f'{json.load(f)}'.replace("'", '"')
@@ -161,9 +161,11 @@ core = Core(agent, mdp)
 #
 # rat1.register_backward_hook(printgradnorm)
 
+# import ipdb; ipdb.set_trace()
+print(agent.approximator.model.network)
+
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
-# for epoch in range(init_epoch, config.n_epochs + 1):
-for epoch in range(init_epoch, 20 + 1):
+for epoch in range(init_epoch, config.n_epochs + 1):
     rtpt.epoch_starts()
     print_epoch(epoch)
     print('- Learning:')
