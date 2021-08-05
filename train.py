@@ -46,7 +46,9 @@ if args.load:
     loaded_af = load_activation_function(args.act_f, args.game, args.seed)
     file_name += "_pretrained"
 
-
+if args.delay:
+    file_name += "_delay"
+    args.freeze_pau = True
 
 epsilon_test = Parameter(value=.05)
 epsilon_random = Parameter(value=1)
@@ -163,9 +165,13 @@ core = Core(agent, mdp)
 
 # import ipdb; ipdb.set_trace()
 print(agent.approximator.model.network)
+from rational.torch import EmbeddedRational
+
+EmbeddedRational.use_kde = False
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
-for epoch in range(init_epoch, config.n_epochs + 1):
+# for epoch in range(init_epoch, config.n_epochs + 1):
+for epoch in range(init_epoch, 10):
     rtpt.epoch_starts()
     print_epoch(epoch)
     print('- Learning:')
@@ -178,12 +184,13 @@ for epoch in range(init_epoch, config.n_epochs + 1):
     # evaluation step
     pi.set_epsilon(epsilon_test)
     mdp.set_episode_end(False)
+    EmbeddedRational.save_all_inputs(True)
     dataset = core.evaluate(n_steps=config.test_samples)
     score = get_stats(dataset)
     scores.append(score)
-    writer.add_scalar('Min Reward', score[0], epoch)
-    writer.add_scalar('Max Reward', score[1], epoch)
-    writer.add_scalar('Mean Reward', score[2], epoch)
+    writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
+    writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
+    writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
     if epoch % 50 == 0:
         pi.set_epsilon(epsilon)
         checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
@@ -191,7 +198,14 @@ for epoch in range(init_epoch, config.n_epochs + 1):
         with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
             pickle.dump(scores, f)
     rtpt.setproctitle()
+    EmbeddedRational.capture_all(f"epoch {epoch}")
+    EmbeddedRational.save_all_inputs(False)
+    if args.delay and epoch == 3:
+        for rat in EmbeddedRational.list:
+            rat.requires_grad_(True)
+    print(EmbeddedRational.list[0].numerators[0].sum())
 
+EmbeddedRational.export_evolution_graphs()
 
 with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}.pkl', 'wb') as f:
     pickle.dump(scores, f)

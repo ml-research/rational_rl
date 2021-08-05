@@ -51,10 +51,10 @@ class Network(nn.Module):
                 self.act_func3 = self.act_func1
                 self.act_func4 = self.act_func1
         elif activation_function == "embrat":
-            self.act_func1 = EmbeddedRational(cuda=USE_CUDA)
-            self.act_func2 = EmbeddedRational(cuda=USE_CUDA)
-            self.act_func3 = EmbeddedRational(cuda=USE_CUDA)
-            self.act_func4 = EmbeddedRational(cuda=USE_CUDA)
+            self.act_func1 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+            self.act_func2 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+            self.act_func3 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+            self.act_func4 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
         elif activation_function == "rat":
             if loaded_act_f is not None:
                 self.act_func1 = loaded_act_f[0]

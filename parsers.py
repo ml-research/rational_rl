@@ -20,6 +20,10 @@ parser.add_argument("--load", help="Load a pretrained AF from a folder",
                     action="store_true", dest="load", default=False)
 parser.add_argument("-prio", help="Whether to use Prioritized Replay used in the DeepMind Paper", dest="prio", action="store_true",
                     required=False, default=None)
+parser.add_argument("-d", "--delay-af-opti", help="If True, the activation \
+                    function won't be learnt before 25 epochs",
+                    dest="delay", action="store_true",
+                    required=False, default=None)
 
 graph_parser = argparse.ArgumentParser()
 graph_parser.add_argument("-g", "--game", help="Game to train on",
