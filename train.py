@@ -167,7 +167,7 @@ core = Core(agent, mdp)
 print(agent.approximator.model.network)
 from rational.torch import EmbeddedRational
 
-EmbeddedRational.use_kde = False
+EmbeddedRational.list = EmbeddedRational.list[:4]
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
 # for epoch in range(init_epoch, config.n_epochs + 1):
@@ -191,6 +191,7 @@ for epoch in range(init_epoch, 10):
     writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
     writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
     writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
+    EmbeddedRational.show_all(writer=writer, step=epoch)
     if epoch % 50 == 0:
         pi.set_epsilon(epsilon)
         checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
@@ -200,10 +201,6 @@ for epoch in range(init_epoch, 10):
     rtpt.setproctitle()
     EmbeddedRational.capture_all(f"epoch {epoch}")
     EmbeddedRational.save_all_inputs(False)
-    if args.delay and epoch == 3:
-        for rat in EmbeddedRational.list:
-            rat.requires_grad_(True)
-    print(EmbeddedRational.list[0].numerators[0].sum())
 
 EmbeddedRational.export_evolution_graphs()
 
