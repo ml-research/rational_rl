@@ -170,8 +170,8 @@ from rational.torch import EmbeddedRational
 EmbeddedRational.list = EmbeddedRational.list[:4]
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
-# for epoch in range(init_epoch, config.n_epochs + 1):
-for epoch in range(init_epoch, 10):
+for epoch in range(init_epoch, config.n_epochs + 1):
+# for epoch in range(init_epoch, 10):
     rtpt.epoch_starts()
     print_epoch(epoch)
     print('- Learning:')
