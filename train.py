@@ -169,6 +169,14 @@ from rational.torch import EmbeddedRational
 
 EmbeddedRational.list = EmbeddedRational.list[:4]
 
+net = agent.approximator.model.network
+clip_value = 1.
+for p in net.parameters():
+    import torch
+    from termcolor import colored
+    print(colored("Using gradient Clipping", 'red'))
+    p.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
+
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
 for epoch in range(init_epoch, config.n_epochs + 1):
 # for epoch in range(init_epoch, 10):
