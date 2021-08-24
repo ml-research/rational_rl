@@ -170,10 +170,11 @@ from rational.torch import EmbeddedRational
 EmbeddedRational.list = EmbeddedRational.list[:4]
 
 net = agent.approximator.model.network
+from termcolor import colored
+import torch
+torch.autograd.set_detect_anomaly(True)
 clip_value = 1.
 for p in net.parameters():
-    import torch
-    from termcolor import colored
     print(colored("Using gradient Clipping", 'red'))
     p.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
 
