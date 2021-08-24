@@ -170,11 +170,11 @@ from rational.torch import EmbeddedRational
 EmbeddedRational.list = EmbeddedRational.list[:4]
 
 net = agent.approximator.model.network
+from termcolor import colored
+print(colored("Using gradient Clipping", 'red'))
 clip_value = 1.
 for p in net.parameters():
     import torch
-    from termcolor import colored
-    print(colored("Using gradient Clipping", 'red'))
     p.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
@@ -192,14 +192,16 @@ for epoch in range(init_epoch, config.n_epochs + 1):
     # evaluation step
     pi.set_epsilon(epsilon_test)
     mdp.set_episode_end(False)
-    EmbeddedRational.save_all_inputs(True)
+    if epoch % 20 == 0:
+        EmbeddedRational.save_all_inputs(True)
     dataset = core.evaluate(n_steps=config.test_samples)
     score = get_stats(dataset)
     scores.append(score)
-    writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
-    writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
+    # writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
+    # writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
     writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
-    EmbeddedRational.show_all(writer=writer, step=epoch)
+    if epoch % 20 == 0:
+        EmbeddedRational.show_all(writer=writer, step=epoch)
     if epoch % 50 == 0:
         pi.set_epsilon(epsilon)
         checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
@@ -207,8 +209,9 @@ for epoch in range(init_epoch, config.n_epochs + 1):
         with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
             pickle.dump(scores, f)
     rtpt.setproctitle()
-    EmbeddedRational.capture_all(f"epoch {epoch}")
-    EmbeddedRational.save_all_inputs(False)
+    if epoch % 20 == 0:
+        EmbeddedRational.capture_all(f"epoch {epoch}")
+        EmbeddedRational.save_all_inputs(False)
 
 EmbeddedRational.export_evolution_graphs()
 
