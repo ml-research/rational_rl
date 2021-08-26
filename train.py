@@ -17,7 +17,7 @@ from parsers import parser
 import json
 from collections import namedtuple
 from datetime import datetime
-
+import torch
 
 args = parser.parse_args()
 
@@ -175,6 +175,8 @@ import torch
 print(colored("Using gradient Clipping", 'red'))
 torch.autograd.set_detect_anomaly(True)
 clip_value = 1.
+from termcolor import colored
+print(colored("Using gradient Clipping", 'red'))
 for p in net.parameters():
     p.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
 
@@ -187,32 +189,36 @@ for epoch in range(init_epoch, config.n_epochs + 1):
     # learning step
     pi.set_epsilon(epsilon)
     mdp.set_episode_end(True)
-    core.learn(n_steps=config.evaluation_frequency,
-               n_steps_per_fit=config.train_frequency)
-    print('- Evaluation:')
-    # evaluation step
-    pi.set_epsilon(epsilon_test)
-    mdp.set_episode_end(False)
-    if epoch % 20 == 0:
+    try:
+        core.learn(n_steps=config.evaluation_frequency,
+                   n_steps_per_fit=config.train_frequency)
+        print('- Evaluation:')
+        # evaluation step
+        pi.set_epsilon(epsilon_test)
+        mdp.set_episode_end(False)
         EmbeddedRational.save_all_inputs(True)
-    dataset = core.evaluate(n_steps=config.test_samples)
-    score = get_stats(dataset)
-    scores.append(score)
-    # writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
-    # writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
-    writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
-    if epoch % 20 == 0:
+        dataset = core.evaluate(n_steps=config.test_samples)
+        score = get_stats(dataset)
+        scores.append(score)
+        writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
+        writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
+        writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
         EmbeddedRational.show_all(writer=writer, step=epoch)
-    if epoch % 50 == 0:
-        pi.set_epsilon(epsilon)
-        checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
-        print("Saving the agent")
-        with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
-            pickle.dump(scores, f)
-    rtpt.setproctitle()
-    if epoch % 20 == 0:
+        if epoch % 50 == 0:
+            pi.set_epsilon(epsilon)
+            checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
+            print("Saving the agent")
+            with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
+                pickle.dump(scores, f)
+        rtpt.setproctitle()
         EmbeddedRational.capture_all(f"epoch {epoch}")
         EmbeddedRational.save_all_inputs(False)
+    except RuntimeError:
+        print("\n\n\n RuntimeError detected, training Failed \n\n\n")
+        EmbeddedRational.show_all(writer=writer, step=epoch)
+        EmbeddedRational.capture_all()
+        EmbeddedRational.export_graphs(f"EmbeddedRational_failed.svg")
+        import ipdb; ipdb.set_trace()
 
 EmbeddedRational.export_evolution_graphs()
 
