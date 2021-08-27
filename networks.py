@@ -125,14 +125,32 @@ class Network(nn.Module):
 
     def forward(self, state, action=None):
         x1 = self._h1(state.float() / 255.)
+        if x1.isnan().any():
+            import ipdb; ipdb.set_trace()
         h = self.act_func1(x1)
+        if h.isnan().any():
+            import ipdb; ipdb.set_trace()
         x2 = self._h2(h)
+        if x2.isnan().any():
+            import ipdb; ipdb.set_trace()
         h = self.act_func2(x2)
+        if h.isnan().any():
+            import ipdb; ipdb.set_trace()
         x3 = self._h3(h)
+        if x3.isnan().any():
+            import ipdb; ipdb.set_trace()
         h = self.act_func3(x3)
+        if h.isnan().any():
+            import ipdb; ipdb.set_trace()
         x4 = self._h4(h.view(-1, 3136))
+        if x4.isnan().any():
+            import ipdb; ipdb.set_trace()
         h = self.act_func4(x4)
+        if h.isnan().any():
+            import ipdb; ipdb.set_trace()
         q = self._h5(h)
+        if q.isnan().any():
+            import ipdb; ipdb.set_trace()
         if action is None:
             return q
         else:

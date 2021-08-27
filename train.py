@@ -169,6 +169,7 @@ from rational.torch import EmbeddedRational
 
 EmbeddedRational.list = EmbeddedRational.list[:4]
 
+
 net = agent.approximator.model.network
 clip_value = 1.
 torch.autograd.set_detect_anomaly(True)
@@ -176,6 +177,8 @@ from termcolor import colored
 print(colored("Using gradient Clipping", 'red'))
 for p in net.parameters():
     p.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
+
+
 
 rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
 for epoch in range(init_epoch, config.n_epochs + 1):
@@ -214,7 +217,7 @@ for epoch in range(init_epoch, config.n_epochs + 1):
         print("\n\n\n RuntimeError detected, training Failed \n\n\n")
         EmbeddedRational.show_all(writer=writer, step=epoch)
         EmbeddedRational.capture_all()
-        EmbeddedRational.export_graphs(f"EmbeddedRational_failed.svg")
+        EmbeddedRational.export_graphs(f"EmbeddedRational_failed_{args.game}_{args.seed}.svg")
         import ipdb; ipdb.set_trace()
 
 EmbeddedRational.export_evolution_graphs()
