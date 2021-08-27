@@ -17,7 +17,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import copy
-import cv2
+# import cv2
 try:
     from pytorch_grad_cam.utils.image import show_cam_on_image
 except Exception as e:
