@@ -22,41 +22,22 @@ class Network(nn.Module):
         n_input = input_shape[0]
         n_output = output_shape[0]
 
-        if activation_function == "embrat":
-            print("Using BatchNorm because of Embedded Rationals")
-            self._h1 = nn.Sequential(nn.Conv2d(n_input, 32, kernel_size=8, stride=4), nn.BatchNorm2d(32, affine=False))
-            self._h2 = nn.Sequential(nn.Conv2d(32, 64, kernel_size=4, stride=2), nn.BatchNorm2d(64, affine=False))
-            self._h3 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, stride=1), nn.BatchNorm2d(64, affine=False))
-            self._h4 = nn.Linear(3136, self.n_features)
-            self._h5 = nn.Linear(self.n_features, n_output)
+        self._h1 = nn.Conv2d(n_input, 32, kernel_size=8, stride=4)
+        self._h2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
+        self._h3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
+        self._h4 = nn.Linear(3136, self.n_features)
+        self._h5 = nn.Linear(self.n_features, n_output)
 
-            nn.init.xavier_uniform_(self._h1[0].weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h2[0].weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h3[0].weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h4.weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h5.weight,
-                                    gain=nn.init.calculate_gain('linear'))
-        else:
-            self._h1 = nn.Conv2d(n_input, 32, kernel_size=8, stride=4)
-            self._h2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
-            self._h3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
-            self._h4 = nn.Linear(3136, self.n_features)
-            self._h5 = nn.Linear(self.n_features, n_output)
-
-            nn.init.xavier_uniform_(self._h1.weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h2.weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h3.weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h4.weight,
-                                    gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self._h5.weight,
-                                    gain=nn.init.calculate_gain('linear'))
+        nn.init.xavier_uniform_(self._h1.weight,
+                                gain=nn.init.calculate_gain('relu'))
+        nn.init.xavier_uniform_(self._h2.weight,
+                                gain=nn.init.calculate_gain('relu'))
+        nn.init.xavier_uniform_(self._h3.weight,
+                                gain=nn.init.calculate_gain('relu'))
+        nn.init.xavier_uniform_(self._h4.weight,
+                                gain=nn.init.calculate_gain('relu'))
+        nn.init.xavier_uniform_(self._h5.weight,
+                                gain=nn.init.calculate_gain('linear'))
 
         if activation_function == "recrat":
             if loaded_act_f is not None:

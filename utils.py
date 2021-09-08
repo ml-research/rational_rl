@@ -46,11 +46,13 @@ def load_activation_function(act_f, game_name, seed):
     """
     load a pretrain act_f and freeze the weights.
     """
-    save_dir = "agent_save/trained_functions"
+    save_dir = "trained_functions"
+    act_dict = {"rat": "rationals"}
+    act_f = act_dict[act_f]
     print(f"Loading {act_f} of {game_name} with seed {seed}")
     file_name = f"trained_{act_f}_{game_name}_{seed}.pkl"
     with open(f"{save_dir}/{file_name}", "rb") as store_file:
-        act_fs = [pau.requires_grad_(False) for pau in pickle.load(store_file)]
+        act_fs = [rat.requires_grad_(False) for rat in pickle.load(store_file)]
     return act_fs
 
 

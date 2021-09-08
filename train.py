@@ -42,6 +42,7 @@ file_name += f"_{args.act_f}"
 if args.freeze_pau:
     file_name += "_freezed"
     sepprint("Freezing")
+
 if args.load:
     loaded_af = load_activation_function(args.act_f, args.game, args.seed)
     file_name += "_pretrained"
@@ -165,65 +166,42 @@ core = Core(agent, mdp)
 
 # import ipdb; ipdb.set_trace()
 print(agent.approximator.model.network)
-from rational.torch import EmbeddedRational
-
-EmbeddedRational.list = EmbeddedRational.list[:4]
 
 
 net = agent.approximator.model.network
 from termcolor import colored
-import torch
-print(colored("Using gradient Clipping", 'red'))
-torch.autograd.set_detect_anomaly(True)
-clip_value = 1.
-from termcolor import colored
-print(colored("Using gradient Clipping", 'red'))
-for p in net.parameters():
-    p.register_hook(lambda grad: torch.clamp(grad, -clip_value, clip_value))
 
 
 
-rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs)
+
+rtpt = RTPT(f"{config.game_name[:4]}S{args.seed}_{args.act_f}", config.n_epochs-init_epoch)
 for epoch in range(init_epoch, config.n_epochs + 1):
-# for epoch in range(init_epoch, 10):
     rtpt.epoch_starts()
     print_epoch(epoch)
     print('- Learning:')
     # learning step
     pi.set_epsilon(epsilon)
     mdp.set_episode_end(True)
-    try:
-        core.learn(n_steps=config.evaluation_frequency,
-                   n_steps_per_fit=config.train_frequency)
-        print('- Evaluation:')
-        # evaluation step
-        pi.set_epsilon(epsilon_test)
-        mdp.set_episode_end(False)
-        EmbeddedRational.save_all_inputs(True)
-        dataset = core.evaluate(n_steps=config.test_samples)
-        score = get_stats(dataset)
-        scores.append(score)
-        writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
-        writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
-        writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
-        EmbeddedRational.show_all(writer=writer, step=epoch)
-        if epoch % 50 == 0:
-            pi.set_epsilon(epsilon)
-            checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
-            print("Saving the agent")
-            with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
-                pickle.dump(scores, f)
-        rtpt.setproctitle()
-        EmbeddedRational.capture_all(f"epoch {epoch}")
-        EmbeddedRational.save_all_inputs(False)
-    except RuntimeError:
-        print("\n\n\n RuntimeError detected, training Failed \n\n\n")
-        EmbeddedRational.show_all(writer=writer, step=epoch)
-        EmbeddedRational.capture_all()
-        EmbeddedRational.export_graphs(f"EmbeddedRational_failed_{args.game}_{args.seed}.svg")
-        import ipdb; ipdb.set_trace()
+    core.learn(n_steps=config.evaluation_frequency,
+               n_steps_per_fit=config.train_frequency)
+    print('- Evaluation:')
+    # evaluation step
+    pi.set_epsilon(epsilon_test)
+    mdp.set_episode_end(False)
+    dataset = core.evaluate(n_steps=config.test_samples)
+    score = get_stats(dataset)
+    scores.append(score)
+    writer.add_scalar(f'{args.game}/Min Reward', score[0], epoch)
+    writer.add_scalar(f'{args.game}/Max Reward', score[1], epoch)
+    writer.add_scalar(f'{args.game}/Mean Reward', score[2], epoch)
+    if epoch % 50 == 0:
+        pi.set_epsilon(epsilon)
+        checkpoint(agent, mdp, scores, f"{args.algo}_{file_name}", epoch)
+        print("Saving the agent")
+        with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
+            pickle.dump(scores, f)
+    rtpt.setproctitle()
 
-EmbeddedRational.export_evolution_graphs()
 
 with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}.pkl', 'wb') as f:
     pickle.dump(scores, f)
