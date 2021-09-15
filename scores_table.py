@@ -4,13 +4,31 @@ import os
 import numpy as np
 import sys
 
+human_scores = {
+    "asterix": 7536.00,
+    "battlezone": 33030.00,
+    "breakout": 27.90,
+    "enduro": 740.20,
+    "jamesbond": 368.50,
+    "kangaroo": 2739.00,
+    "pong": 15.50,
+    "qbert": 12085.00,
+    "seaquest": 40425.80,
+    "skiing": -3686.60,
+    "spaceinvaders": 1464.90,
+    "tennis": -6.70,
+    "timepilot": 5650.00,
+    "tutankham": 138.30,
+    "videopinball": 15641.10
+}
+
 if "--all" in sys.argv:
     act_fs = ["lrelu", "rpau", "paus", "onlysilu", "d+silu", "Random", "DDQN"]
     act_names = ["LReLU", "RRN", "RN",  "SiLU", "d+SiLU", "Random", "DDQN"]
     suffix = "all"
 elif "--pretrained" in sys.argv:
-    act_fs = ["lrelu", "RRN", "rpau_pretrained", "paus", "paus_pretrained"]
-    act_names = ["LReLU", "RRN", "RPAU pretrained", "PAUS", "pretrained paus"]
+    act_fs = ["paus", "paus_pretrained"]
+    act_names = ["flexible", "pretrained"]
     suffix = "pretrained"
 else:
     print("Please provide the activation functions for the table:")
@@ -52,6 +70,8 @@ for game_dir in games_dirs:
                     data_from_file = pickle.load(f)
                     avg.append(data_from_file[2])
                     nb_seeds += 1
+            if "DQN" in score_file:
+                game_name = score_file.split("scores")[1].split("Deter")[0]
 
         if nb_seeds > 0:
             if np.abs(np.mean(avg)) < 10:
@@ -63,7 +83,18 @@ for game_dir in games_dirs:
             else:
                 as_mean = np.round(np.mean(avg), 0)  # all seeds mean
                 as_std = np.round(np.std(avg), 0)  # all seeds mean
-            scores_on_game.append(f"{as_mean} ± {as_std}")
+            if "--human_normalized" in sys.argv:
+                rand_score = []
+                for i in range(5):
+                    score_file = f"Random_scores{game_name}Deterministic-v4_seed{i}.pkl"
+                    with open(f"scores/{game_dir}/{score_file}", "rb") as f:
+                        data_from_file = pickle.load(f)
+                        rand_score.append(data_from_file[2])
+                rand_score = np.average(rand_score)
+                human_score = human_scores[game_name.lower()]
+                scores_on_game.append(100 * (as_mean - rand_score) / (human_score - rand_score))
+            else:
+                scores_on_game.append(f"{as_mean} ± {as_std}")
         else:
             scores_on_game.append(np.nan)
             min_seed = 0
@@ -76,6 +107,10 @@ cols = ["game"] + act_names
 if "--seed" in sys.argv:
     cols += ["# seeds"]
 score_df = pd.DataFrame(rows, columns=cols).dropna()
+# if "--pretrained" in sys.argv:
+#     score_df = score_df.T
+if "--human_normalized" in sys.argv:
+    suffix += "_human_normalized"
 print(score_df)
 if "--store" in sys.argv:
     score_df.to_csv(f"scores_tables/scores_table_{suffix}.csv", index=False)
