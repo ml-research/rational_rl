@@ -22,9 +22,19 @@ class dSiLU(nn.Module):
 class PELU(nn.Module):
     def __init__(self):
         super().__init__()
-        self.c = nn.Parameter(torch.FloatTensor([1.]))
         self.a = nn.Parameter(torch.FloatTensor([1.]))
         self.b = nn.Parameter(torch.FloatTensor([1.]))
+        self.c = nn.Parameter(torch.FloatTensor([1.]))
 
     def forward(self, x):
-        return - self.c * relu(-x.float()) + self.a * (torch.exp(relu(x.float())/self.b) - 1)
+        return self.c * relu(x.float()) + self.a * (torch.exp(-relu(-x.float())/self.b) - 1)
+
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+
+    pelu = PELU()
+    inp = torch.arange(-3, 3, 0.01)
+    plt.grid()
+    plt.plot(inp.detach().numpy(), pelu(inp).detach().numpy())
+    plt.show()
