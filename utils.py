@@ -155,6 +155,25 @@ def repair_agent(agent):
             exec(f"network.act_func{i+1}.center = 0")
             exec(f"network.act_func{i+1}.center = 0")
 
+def repair_approx(approx, remove_attr=True):
+    network = approx.model.network
+    if not hasattr(network.act_func1, "weight_numerator"):
+        for i in range(4):
+            exec(f"network.act_func{i+1}.numerator = network.act_func{i+1}.numerator")
+            exec(f"network.act_func{i+1}.denominator = network.act_func{i+1}.denominator")
+    else:
+        for i in range(4):
+            exec(f"network.act_func{i+1}.numerator = network.act_func{i+1}.weight_numerator")
+            exec(f"network.act_func{i+1}.denominator = network.act_func{i+1}.weight_denominator")
+            if remove_attr:
+                 exec(f"del network.act_func{i+1}.weight_numerator")
+                 exec(f"del network.act_func{i+1}.weight_denominator")
+    if hasattr(network.act_func1, "center"):
+        for i in range(4):
+            # exec(f"network.act_func{i+1}.center = 0")
+            if remove_attr:
+                 exec(f"del network.act_func{i+1}.center")
+
 
 class GymRenderer():
     def __init__(self, env, record=False, title="video"):

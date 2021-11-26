@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+from torch.nn.functional import relu
 
 class SiLU(nn.Module):
     def __init__(self):
@@ -16,3 +17,14 @@ class dSiLU(nn.Module):
 
     def forward(self, input):
         return torch.sigmoid(input.float()) * (1 + input * (1 - torch.sigmoid(input.float())))
+
+
+class PELU(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.c = nn.Parameter(torch.FloatTensor([1.]))
+        self.a = nn.Parameter(torch.FloatTensor([1.]))
+        self.b = nn.Parameter(torch.FloatTensor([1.]))
+
+    def forward(self, x):
+        return - self.c * relu(-x.float()) + self.a * (torch.exp(relu(x.float())/self.b) - 1)

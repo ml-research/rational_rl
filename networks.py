@@ -3,13 +3,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from rational.torch import Rational, EmbeddedRational
 from utils import sepprint
-from activation_functions import SiLU, dSiLU
+from activation_functions import SiLU, dSiLU, PELU
 
 USE_CUDA = torch.cuda.is_available()
-if USE_CUDA:
-    sepprint("\nUsing CUDA on " + torch.cuda.get_device_name(0) + '\n')
-else:
-    sepprint("\nNot using CUDA\n")
+# if USE_CUDA:
+#     sepprint("\nUsing CUDA on " + torch.cuda.get_device_name(0) + '\n')
+# else:
+#     sepprint("\nNot using CUDA\n")
 
 
 class Network(nn.Module):
@@ -18,7 +18,6 @@ class Network(nn.Module):
     def __init__(self, input_shape, output_shape, activation_function,
                  freeze_pau=False, loaded_act_f=None, **kwargs):
         super().__init__()
-
         n_input = input_shape[0]
         n_output = output_shape[0]
 
@@ -87,6 +86,11 @@ class Network(nn.Module):
             self.act_func3 = self.act_func1
             self.act_func4 = self.act_func1
             # self.shared_w =
+        elif activation_function == "pelu":
+            self.act_func1 = PELU()
+            self.act_func2 = PELU()
+            self.act_func3 = PELU()
+            self.act_func4 = PELU()
         elif activation_function == "silu":
             self.act_func1 = SiLU()
             self.act_func2 = self.act_func1
@@ -103,7 +107,6 @@ class Network(nn.Module):
             self.act_func3 = dSiLU()
             self.act_func4 = self.act_func3
 
-
     def forward(self, state, action=None):
         x1 = self._h1(state.float() / 255.)
         h = self.act_func1(x1)
@@ -114,6 +117,7 @@ class Network(nn.Module):
         x4 = self._h4(h.view(-1, 3136))
         h = self.act_func4(x4)
         q = self._h5(h)
+
         if action is None:
             return q
         else:

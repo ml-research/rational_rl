@@ -1,3 +1,4 @@
+from mushroom_rl.algorithms.value import DQN, DoubleDQN
 from mushroom_rl.algorithms.agent import Agent
 from mushroom_rl.environments import Atari
 from mushroom_rl.utils.parameters import Parameter
@@ -6,6 +7,7 @@ from utils import GymRenderer, make_deterministic, extract_game_name
 from parsers import rendering_parser as parser
 from collections import namedtuple
 import json
+import matplotlib
 
 
 def run_exp(agent, env, args):
@@ -18,7 +20,7 @@ def run_exp(agent, env, args):
     epsilon_test = Parameter(value=0.05)
     agent.policy.set_epsilon(epsilon_test)
 
-    for i in range(1): # only 1 life
+    for i in range(10): # only 1 life
         total_r = 0
         state = env.reset()
         n_steps = 0
@@ -28,8 +30,17 @@ def run_exp(agent, env, args):
             total_r += reward
             n_steps += 1
             if renderer is not None:
-                renderer.render()
+                renderer.render("normal")
                 time.sleep(0.01)
+                if n_steps % 50 == 0 and args.extract_images:
+                    answer = input("Save the current frame ?")
+                    if answer == "y":
+                        image = renderer.render("return")
+                        save_folder = "images/game_frames"
+                        save_path = f'{save_folder}/{game_name}_{i}_{n_steps//100}.png'
+                        matplotlib.image.imsave(save_path, image)
+                        print(f'saved image {save_path}')
+
             if done:
                 print("Done")
                 break
@@ -40,6 +51,10 @@ def run_exp(agent, env, args):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+
+    if args.agent_path is None:
+        print("Please provide an agent path")
+        exit(1)
 
     game_name = extract_game_name(args.agent_path)
     with open(f'configs/{game_name}_config.json', 'r') as f:

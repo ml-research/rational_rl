@@ -201,6 +201,8 @@ for epoch in range(init_epoch, config.n_epochs + 1):
         with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}_{epoch}.pkl', 'wb') as f:
             pickle.dump(scores, f)
     rtpt.setproctitle()
+    if epoch == 3:
+        import ipdb; ipdb.set_trace()
 
 
 with open(f'./{agent_save_dir}/{args.algo}_scores{file_name}.pkl', 'wb') as f:

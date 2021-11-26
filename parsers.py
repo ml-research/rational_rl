@@ -3,8 +3,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-af", "--act", help="Activation function to use",
                     action="store", dest="act_f", required=True,
-                    choices=['rat', 'embrat', 'recrat', 'lrelu', 'relu', 'silu',
-                             'd+silu', 'r3r', 'r2r2', 'rr3', 'r2rr'])
+                    choices=['rat', 'embrat', 'recrat', 'lrelu', 'relu', 'pelu',
+                             'silu', 'd+silu', 'r3r', 'r2r2', 'rr3', 'r2rr'])
 parser.add_argument("-alg", "--algo", help="Activation function to use",
                     action="store", dest="algo", required=True,
                     choices=['DQN', 'DDQN', 'DistribDQN', 'DuelingDQN', 'Rainbow'])
@@ -34,7 +34,7 @@ graph_parser.add_argument("--csv_score", help="Creates a file csv file of the re
                           action="store_true", dest="csv")
 
 rendering_parser = argparse.ArgumentParser()
-rendering_parser.add_argument('agent_path', help='path to agent to vizualize')
+rendering_parser.add_argument('-a', '--agent_path', required=False, help='path to agent', default=None)
 rendering_parser.add_argument("-r", "--record", help="records the video",
                               action="store_true", dest="record", default=False)
 rendering_parser.add_argument("-nd", "--no_display", help="Avoid displaying",
@@ -45,6 +45,10 @@ rendering_parser.add_argument("-e", "--epoch", help="Epoch to use",
                               dest="epoch", default="500")
 rendering_parser.add_argument("-s", "--seed", help="Seed for pytorch + env",
                               default=0, action="store", dest="seed", type=int)
+rendering_parser.add_argument("-st", "--store", help="Store if there is something to store",
+                              action="store_true")
+rendering_parser.add_argument("-ei", "--extract_images", help="Extracts the images",
+                              action="store_true")
 
 eval_parser = argparse.ArgumentParser()
 eval_parser.add_argument("-af", "--act", help="Activation function to use",
