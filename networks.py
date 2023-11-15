@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 # from rational.torch import Rational, EmbeddedRational
-from activations.torch import Rational
+# from activations.torch import Rational
 from utils import sepprint
 from activation_functions import SiLU, dSiLU, PELU
 
@@ -45,43 +45,43 @@ class Network(nn.Module):
         nn.init.xavier_uniform_(self._h5.weight,
                                 gain=nn.init.calculate_gain('linear'))
 
-        if activation_function == "recrat":
-            if loaded_act_f is not None:
-                self.act_func1 = loaded_act_f[0]
-                self.act_func2 = self.act_func1
-                self.act_func3 = self.act_func1
-                self.act_func4 = self.act_func1
-            else:
-                self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func2 = self.act_func1
-                self.act_func3 = self.act_func1
-                self.act_func4 = self.act_func1
-        # elif activation_function == "embrat":
-        #     self.act_func1 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-        #     self.act_func2 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-        #     self.act_func3 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-        #     self.act_func4 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-        elif activation_function == "rat":
-            if loaded_act_f is not None:
-                self.act_func1 = loaded_act_f[0]
-                self.act_func2 = loaded_act_f[1]
-                self.act_func3 = loaded_act_f[2]
-                self.act_func4 = loaded_act_f[3]
-            else:
-                self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func2 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func3 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-                self.act_func4 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-        elif activation_function == "r2r2":
-            self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-            self.act_func2 = self.act_func1
-            self.act_func3 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-            self.act_func4 = self.act_func3
-        elif activation_function == "r3r":
-            self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-            self.act_func2 = self.act_func1
-            self.act_func3 = self.act_func1
-            self.act_func4 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # if activation_function == "recrat":
+        #     if loaded_act_f is not None:
+        #         self.act_func1 = loaded_act_f[0]
+        #         self.act_func2 = self.act_func1
+        #         self.act_func3 = self.act_func1
+        #         self.act_func4 = self.act_func1
+        #     else:
+        #         self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #         self.act_func2 = self.act_func1
+        #         self.act_func3 = self.act_func1
+        #         self.act_func4 = self.act_func1
+        # # elif activation_function == "embrat":
+        # #     self.act_func1 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # #     self.act_func2 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # #     self.act_func3 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # #     self.act_func4 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # elif activation_function == "rat":
+        #     if loaded_act_f is not None:
+        #         self.act_func1 = loaded_act_f[0]
+        #         self.act_func2 = loaded_act_f[1]
+        #         self.act_func3 = loaded_act_f[2]
+        #         self.act_func4 = loaded_act_f[3]
+        #     else:
+        #         self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #         self.act_func2 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #         self.act_func3 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #         self.act_func4 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # elif activation_function == "r2r2":
+        #     self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #     self.act_func2 = self.act_func1
+        #     self.act_func3 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #     self.act_func4 = self.act_func3
+        # elif activation_function == "r3r":
+        #     self.act_func1 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #     self.act_func2 = self.act_func1
+        #     self.act_func3 = self.act_func1
+        #     self.act_func4 = Rational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
         elif activation_function == "relu":
             self.act_func1 = F.relu
             self.act_func2 = self.act_func1
