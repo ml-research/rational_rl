@@ -182,8 +182,8 @@ for epoch in range(init_epoch, config.n_epochs + 1):
     # learning step
     pi.set_epsilon(epsilon)
     mdp.set_episode_end(True)
-    core.learn(n_steps=config.evaluation_frequency,
-               n_steps_per_fit=config.train_frequency)
+    core.learn(n_steps=config.evaluation_frequency/100,
+               n_steps_per_fit=config.train_frequency/100)
     print('- Evaluation:')
     # evaluation step
     pi.set_epsilon(epsilon_test)

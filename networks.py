@@ -1,15 +1,12 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from rational.torch import Rational, EmbeddedRational
+# from rational.torch import Rational, EmbeddedRational
+from activations.torch import Rational
 from utils import sepprint
 from activation_functions import SiLU, dSiLU, PELU
 
 USE_CUDA = torch.cuda.is_available()
-# if USE_CUDA:
-#     sepprint("\nUsing CUDA on " + torch.cuda.get_device_name(0) + '\n')
-# else:
-#     sepprint("\nNot using CUDA\n")
 
 
 class Network(nn.Module):
@@ -20,10 +17,20 @@ class Network(nn.Module):
         super().__init__()
         n_input = input_shape[0]
         n_output = output_shape[0]
-
-        self._h1 = nn.Conv2d(n_input, 32, kernel_size=8, stride=4)
-        self._h2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
-        self._h3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
+        if activation_function == "crelu":
+            self._h1 = nn.Conv2d(n_input, 16, kernel_size=8, stride=4)
+            self._h2 = nn.Conv2d(32, 32, kernel_size=4, stride=2)
+            self._h3 = nn.Conv2d(64, 32, kernel_size=3, stride=1)
+            self.act_func1 = F.relu
+            self.act_func2 = self.act_func1
+            self.act_func3 = self.act_func1
+            self.act_func4 = self.act_func1
+            self.forward = self._crelu_forward
+        else:
+            self._h1 = nn.Conv2d(n_input, 32, kernel_size=8, stride=4)
+            self._h2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
+            self._h3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
+            self.forward = self._normal_forward
         self._h4 = nn.Linear(3136, self.n_features)
         self._h5 = nn.Linear(self.n_features, n_output)
 
@@ -49,11 +56,11 @@ class Network(nn.Module):
                 self.act_func2 = self.act_func1
                 self.act_func3 = self.act_func1
                 self.act_func4 = self.act_func1
-        elif activation_function == "embrat":
-            self.act_func1 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-            self.act_func2 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-            self.act_func3 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
-            self.act_func4 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        # elif activation_function == "embrat":
+        #     self.act_func1 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #     self.act_func2 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #     self.act_func3 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
+        #     self.act_func4 = EmbeddedRational(cuda=USE_CUDA).requires_grad_(not freeze_pau)
         elif activation_function == "rat":
             if loaded_act_f is not None:
                 self.act_func1 = loaded_act_f[0]
@@ -107,13 +114,31 @@ class Network(nn.Module):
             self.act_func3 = dSiLU()
             self.act_func4 = self.act_func3
 
-    def forward(self, state, action=None):
+    def _normal_forward(self, state, action=None):
         x1 = self._h1(state.float() / 255.)
         h = self.act_func1(x1)
         x2 = self._h2(h)
         h = self.act_func2(x2)
         x3 = self._h3(h)
         h = self.act_func3(x3)
+        x4 = self._h4(h.view(-1, 3136))
+        h = self.act_func4(x4)
+        q = self._h5(h)
+
+        if action is None:
+            return q
+        else:
+            q_acted = torch.squeeze(q.gather(1, action.long()))
+
+            return q_acted
+    
+    def _crelu_forward(self, state, action=None):
+        x1 = self._h1(state.float() / 255.)
+        h = torch.cat((F.relu(x1), F.relu(-x1)), 1)
+        x2 = self._h2(h)
+        h = torch.cat((F.relu(x2), F.relu(-x2)), 1)
+        x3 = self._h3(h)
+        h = torch.cat((F.relu(x3), F.relu(-x3)), 1)
         x4 = self._h4(h.view(-1, 3136))
         h = self.act_func4(x4)
         q = self._h5(h)

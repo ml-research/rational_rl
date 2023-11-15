@@ -1,15 +1,15 @@
-gym==0.17.2
-imageio==2.9.0
-ipdb==0.10.3
-matplotlib==3.3.3
-mushroom_rl==1.6.0
+gym
+imageio
+ipdb
+matplotlib
+mushroom_rl
 numpy
-opencv_python==4.2.0.34
+opencv_python
 pandas
 # pau==0.0.17
-physt==0.4.10.1
-rational_activations
-seaborn==0.11.1
-setproctitle==1.1.10
+physt
+#rational_activations
+seaborn
+setproctitle
 # torch==1.4.0
 # torchvision==0.8.1

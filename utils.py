@@ -1,7 +1,7 @@
 from mushroom_rl.utils.dataset import compute_metrics, compute_J
 from os import listdir, makedirs, remove
 from os.path import isfile, join
-from rational.torch import Rational
+from activations.torch import Rational
 import torch
 import numpy as np
 import re
@@ -37,7 +37,7 @@ def make_deterministic(seed, mdp, states_dict=None):
     else:
         np.random.set_state(states_dict["numpy"])
         torch.random.set_rng_state(states_dict["torch"])
-        mdp.env.env.np_random.set_state(states_dict["env"])
+        # mdp.env.env.np_random.set_state(states_dict["env"])
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
         print(f"Reset environment to recovered random state ")
@@ -81,7 +81,7 @@ def checkpoint(agent, mdp, scores, filename, epoch, agent_save_dir='agent_save')
     random_state_dict = {}
     random_state_dict["numpy"] = np.random.get_state()
     random_state_dict["torch"] = torch.random.get_rng_state()
-    random_state_dict["env"] = mdp.env.env.np_random.get_state()
+    # random_state_dict["env"] = mdp.env.env.np_random.get_state()
     pickle.dump((agent, mdp, scores, random_state_dict), open(path, 'wb'))
     if epoch > 50:
         remove(f"checkpoints/checkpoint_{filename}_epoch_{epoch-50}")
@@ -95,7 +95,8 @@ def print_epoch(epoch):
 
 def get_stats(dataset):
     score = compute_metrics(dataset)
-    print(('min_reward: %f, max_reward: %f, mean_reward: %f, games_completed: %d' % score))
+    minr, maxr, meanr, medianr, gcplt = score
+    print((f'min_reward: {minr}, max_reward: {maxr}, mean_reward: {meanr}, games_completed: {gcplt}'))
     return score
 
 
